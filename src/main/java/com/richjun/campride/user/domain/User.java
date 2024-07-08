@@ -21,9 +21,6 @@ public class User {
 
     private String socialLoginId;
     private String nickname;
-
-    private String email;
-
     private String role;
 
     public User(String socialLoginId, String nickname, String role) {

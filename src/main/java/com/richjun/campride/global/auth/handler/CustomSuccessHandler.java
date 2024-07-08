@@ -1,56 +1,119 @@
 package com.richjun.campride.global.auth.handler;
 
+
+import static com.richjun.campride.global.jwt.util.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
-import com.richjun.campride.global.jwt.util.JwtUtil;
+import com.richjun.campride.global.jwt.JwtTokenProvider;
+import com.richjun.campride.global.jwt.dto.TokenResponse;
+import com.richjun.campride.global.jwt.util.CookieAuthorizationRequestRepository;
+import com.richjun.campride.global.jwt.util.CookieUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
+@Slf4j
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JwtUtil jwtUtil;
+    @Value("${oauth.authorizedRedirectUri}")
+    private String redirectUri;
+    private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
-    public CustomSuccessHandler(JwtUtil jwtUtil) {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-        this.jwtUtil = jwtUtil;
+
+    public CustomSuccessHandler(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper,
+                                CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
+        this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        //OAuth2User
-        CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
+//        TokenResponse tokenResponse = jwtTokenProvider.generateToken(authentication);
+//
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.setStatus(HttpServletResponse.SC_OK);
+//        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
 
-        String username = customUserDetails.getUsername();
+        String targetUrl = determineTargetUrl(request, response, authentication);
 
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
+//        System.out.println("success targetURL : " + targetUrl);
 
-        String token = jwtUtil.createJwt(username, role, 60 * 60 * 60L);
+        if (response.isCommitted()) {
+            log.info("Response has already been committed.");
+            return;
+        }
+        clearAuthenticationAttributes(request, response);
 
-        response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:8080/");
+        try {
+            getRedirectStrategy().sendRedirect(request, response, "campride:" + targetUrl);
+            log.info("redirect success : " + targetUrl);
+        } catch (Exception e) {
+            log.info("redirect failed : " + e);
+        }
+
     }
 
-    private Cookie createCookie(String key, String value) {
 
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60 * 60 * 60);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
+    protected String determineTargetUrl(jakarta.servlet.http.HttpServletRequest request,
+                                        jakarta.servlet.http.HttpServletResponse response,
+                                        Authentication authentication) {
+        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue);
 
-        return cookie;
+        if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
+            throw new RuntimeException("redirect URIs are not matched.");
+        }
+        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+
+        //JWT 생성
+        TokenResponse tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        return UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("accesstoken", tokenInfo.getAccessToken())
+                .queryParam("refreshtoken", tokenInfo.getRefreshToken())
+                .build().toUriString();
     }
+
+    protected void clearAuthenticationAttributes(jakarta.servlet.http.HttpServletRequest request,
+                                                 jakarta.servlet.http.HttpServletResponse response) {
+        super.clearAuthenticationAttributes((jakarta.servlet.http.HttpServletRequest) request);
+        cookieAuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+    }
+
+    private boolean isAuthorizedRedirectUri(String uri) {
+        URI clientRedirectUri = URI.create(uri);
+        URI authorizedUri = URI.create(redirectUri);
+
+        if (authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+                && authorizedUri.getPort() == clientRedirectUri.getPort()) {
+            return true;
+        }
+        return false;
+    }
+//
+
 }
+
+
