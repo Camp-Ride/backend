@@ -49,16 +49,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-//        TokenResponse tokenResponse = jwtTokenProvider.generateToken(authentication);
-//
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
-//        response.setStatus(HttpServletResponse.SC_OK);
-//        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
-
         String targetUrl = determineTargetUrl(request, response, authentication);
-
-//        System.out.println("success targetURL : " + targetUrl);
 
         if (response.isCommitted()) {
             log.info("Response has already been committed.");

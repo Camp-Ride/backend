@@ -39,3 +39,6 @@ out/
 campride.mv.db
 
 src/main/resources/*
+
+src/main/resources/application-local.yaml
+src/main/resources/application-prod.yaml

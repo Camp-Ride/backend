@@ -60,6 +60,8 @@ public class SecurityConfig {
         http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable);
 
+        http.formLogin(login->login.loginPage("/"));
+
         //JWTFilter 추가
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
@@ -72,8 +74,6 @@ public class SecurityConfig {
 
         //oauth2
         http.oauth2Login((oauth2) -> oauth2
-//                .authorizationEndpoint((endpoint) -> endpoint.baseUri("login/oauth2/authorize/*"))
-//                .redirectionEndpoint((endpoint) -> endpoint.baseUri("login/oauth2/code/*"))
                 .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                         .userService(customOAuth2UserService))
                 .successHandler(customSuccessHandler));
