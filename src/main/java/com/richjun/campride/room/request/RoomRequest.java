@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.richjun.campride.room.domain.type.RoomType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
@@ -40,7 +42,7 @@ public class RoomRequest {
     private String destination;
 
     @NotNull(message = "출발 날짜를 입력해 주세요.")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Temporal(TemporalType.TIMESTAMP)
 //    @JsonFormat(pattern = "yyyy-MM-dd-HH:mm")
     private LocalDateTime departureTime;
 
