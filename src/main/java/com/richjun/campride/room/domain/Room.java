@@ -20,6 +20,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,7 +63,7 @@ public class Room {
     private Location destinationLocation;
 
     @Column(nullable = false)
-    private LocalDate departureTime;
+    private LocalDateTime departureTime;
 
     @Column(nullable = false)
     private int maxParticipants;

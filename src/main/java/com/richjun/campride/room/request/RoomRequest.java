@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 @AllArgsConstructor
@@ -37,8 +39,9 @@ public class RoomRequest {
     private String destination;
 
     @NotNull(message = "출발 날짜를 입력해 주세요.")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDate departureTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+//    @JsonFormat(pattern = "yyyy-MM-dd-HH:mm")
+    private LocalDateTime departureTime;
 
     @NotNull(message = "방 최대 참여 인원을 선택해 주세요.")
     @Min(value = 2, message = "방 최대 참여 인원이 2보다 작을 수 없습니다.")
