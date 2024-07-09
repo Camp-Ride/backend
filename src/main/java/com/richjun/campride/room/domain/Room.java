@@ -46,9 +46,7 @@ public class Room {
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "leader_id", nullable = false)
-    private User leader;
+    private String leaderNickname;
 
 
     @Column(nullable = false)
@@ -92,13 +90,13 @@ public class Room {
     private List<User> participants;
 
 
-    public static Room of(final RoomRequest roomRequest, List<User> participants, User leader,
+    public static Room of(final RoomRequest roomRequest, List<User> participants, String leaderNickname,
                           Location departureLocation,
                           Location destinationLocation) {
         return new Room(
                 null,
                 roomRequest.getTitle(),
-                leader,
+                leaderNickname,
                 roomRequest.getDeparture(),
                 departureLocation,
                 roomRequest.getDestination(),
@@ -110,5 +108,13 @@ public class Room {
         );
     }
 
-
+    public void update(RoomRequest roomRequest, Location departureLocation, Location destinationLocation) {
+        this.title = roomRequest.getTitle();
+        this.departure = roomRequest.getDeparture();
+        this.departureLocation = departureLocation;
+        this.destination = roomRequest.getDestination();
+        this.destinationLocation = destinationLocation;
+        this.departureTime = roomRequest.getDepartureTime();
+        this.roomType = roomRequest.getRoomType();
+    }
 }

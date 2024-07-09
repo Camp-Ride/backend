@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -50,12 +51,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String nickname = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
 
         OAuth2UserResponse oAuth2UserResponse = new OAuth2UserResponse(oAuth2Response.getName(), nickname, "ROLE_USER");
-
-        log.info(nickname);
 
         findOrCreateUser(oAuth2UserResponse.getNickname(), oAuth2UserResponse.getUsername(),
                 oAuth2UserResponse.getRole());

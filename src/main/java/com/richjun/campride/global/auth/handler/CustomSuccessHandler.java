@@ -47,7 +47,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        log.info(authentication.getName());
 
         String targetUrl = determineTargetUrl(request, response, authentication);
 

@@ -100,10 +100,6 @@ public class JwtTokenProvider {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
-//        System.out.println(getUsernameFromToken(accessToken) + " " +
-//                getNameFromToken(accessToken) + " " +
-//                getRoleFromToken(accessToken));
-
         OAuth2UserResponse oAuth2UserResponse = new OAuth2UserResponse(getNameFromToken(accessToken),
                 getNicknameFromToken(accessToken),
                 getRoleFromToken(accessToken));

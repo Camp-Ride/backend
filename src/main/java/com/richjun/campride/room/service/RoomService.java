@@ -21,17 +21,17 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class RoomService {
 
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final GeocodingService geocodingService;
 
-    public Long create(final RoomRequest roomRequest, CustomOAuth2User oAuth2User) {
+    public Long create(final RoomRequest roomRequest, final CustomOAuth2User oAuth2User) {
 
         Location departureLocation = geocodingService.getAddressCoordinates(roomRequest.getDeparture());
         Location destinationLocation = geocodingService.getAddressCoordinates(roomRequest.getDestination());
@@ -43,14 +43,34 @@ public class RoomService {
         participants.add(leaderUser);
 
         return roomRepository.save(
-                Room.of(roomRequest, participants, leaderUser, departureLocation, destinationLocation)).getId();
+                        Room.of(roomRequest, participants, leaderUser.getNickname(), departureLocation, destinationLocation))
+                .getId();
     }
 
-    public RoomResponse getRoom(Long id) {
+    public RoomResponse getRoom(final Long id) {
 
         final Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
 
         return RoomResponse.from(room);
     }
 
+    public Long updateRoom(final Long id, final RoomRequest roomRequest) {
+
+        Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+
+        Location departureLocation = room.getDepartureLocation();
+        Location destinationLocation = room.getDestinationLocation();
+
+        if (!roomRequest.getDeparture().equals(room.getDeparture())) {
+            departureLocation = geocodingService.getAddressCoordinates(roomRequest.getDeparture());
+        }
+
+        if (!roomRequest.getDestination().equals(room.getDestination())) {
+            destinationLocation = geocodingService.getAddressCoordinates(roomRequest.getDestination());
+        }
+
+        room.update(roomRequest, departureLocation, destinationLocation);
+
+        return room.getId();
+    }
 }

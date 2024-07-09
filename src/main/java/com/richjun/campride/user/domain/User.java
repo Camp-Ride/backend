@@ -31,10 +31,6 @@ public class User {
     private String nickname;
     private String role;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "leader", fetch = FetchType.LAZY)
-    private List<Room> leaderRooms;
-
     @ManyToMany(mappedBy = "participants")
     private List<Room> rooms;
 

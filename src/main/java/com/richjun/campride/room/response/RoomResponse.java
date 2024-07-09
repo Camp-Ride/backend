@@ -41,7 +41,7 @@ public class RoomResponse {
     public static RoomResponse from(Room room) {
 
         return new RoomResponse(room.getId(),
-                room.getLeader().getNickname(),
+                room.getLeaderNickname(),
                 room.getTitle(),
                 room.getDeparture(),
                 room.getDepartureLocation(),
