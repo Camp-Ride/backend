@@ -3,6 +3,7 @@ package com.richjun.campride.global.jwt;
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.auth.response.OAuth2UserResponse;
+import com.richjun.campride.global.auth.service.CustomOAuth2UserService;
 import com.richjun.campride.global.jwt.dto.TokenResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -98,7 +100,12 @@ public class JwtTokenProvider {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
-        OAuth2UserResponse oAuth2UserResponse = new OAuth2UserResponse(getUsernameFromToken(accessToken),
+//        System.out.println(getUsernameFromToken(accessToken) + " " +
+//                getNameFromToken(accessToken) + " " +
+//                getRoleFromToken(accessToken));
+
+        OAuth2UserResponse oAuth2UserResponse = new OAuth2UserResponse(getNameFromToken(accessToken),
+                getNicknameFromToken(accessToken),
                 getRoleFromToken(accessToken));
 
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(oAuth2UserResponse);
@@ -147,7 +154,11 @@ public class JwtTokenProvider {
     }
 
 
-    public String getUsernameFromToken(String token) {
+    public String getNameFromToken(String token) {
+        return getClaimFromToken(token, claims -> claims.get("name", String.class));
+    }
+
+    public String getNicknameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 

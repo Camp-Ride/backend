@@ -28,6 +28,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 public class RoomRequest {
 
+
     @NotBlank(message = "방제목을 입력해 주세요")
     @Size(max = 60, message = "방제목은 60자를 초과할 수 없습니다.")
     private String title;

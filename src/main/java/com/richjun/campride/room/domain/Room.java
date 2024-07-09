@@ -4,6 +4,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.richjun.campride.global.location.domain.Location;
 import com.richjun.campride.room.domain.type.RoomType;
 import com.richjun.campride.room.request.RoomRequest;
@@ -18,9 +19,14 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +45,11 @@ public class Room {
 
     @Column(nullable = false)
     private String title;
+
+    @ManyToOne
+    @JoinColumn(name = "leader_id", nullable = false)
+    private User leader;
+
 
     @Column(nullable = false)
     private String departure;
@@ -72,14 +83,22 @@ public class Room {
     @Column(nullable = false)
     private RoomType roomType;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "user_room",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> participants;
 
 
-    public static Room of(final RoomRequest roomRequest, Location departureLocation, Location destinationLocation) {
+    public static Room of(final RoomRequest roomRequest, List<User> participants, User leader,
+                          Location departureLocation,
+                          Location destinationLocation) {
         return new Room(
                 null,
                 roomRequest.getTitle(),
+                leader,
                 roomRequest.getDeparture(),
                 departureLocation,
                 roomRequest.getDestination(),
@@ -87,7 +106,7 @@ public class Room {
                 roomRequest.getDepartureTime(),
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
-                null
+                participants
         );
     }
 

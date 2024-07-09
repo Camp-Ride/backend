@@ -1,24 +1,14 @@
 package com.richjun.campride.global.auth.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class OAuth2UserResponse {
 
-
     private String username;
-    private String name;
+    private String nickname;
     private String role;
 
-
-    public OAuth2UserResponse(String username, String name, String role) {
-        this.username = username;
-        this.name = name;
-        this.role = role;
-    }
-
-    public OAuth2UserResponse(String username, String role) {
-        this.username = username;
-        this.role = role;
-    }
 }

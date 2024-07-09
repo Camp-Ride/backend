@@ -35,19 +35,19 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
 
 
     public CustomSuccessHandler(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper,
                                 CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
         this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+
+        log.info(authentication.getName());
 
         String targetUrl = determineTargetUrl(request, response, authentication);
 

@@ -11,14 +11,16 @@ import com.richjun.campride.global.auth.response.OAuth2UserResponse;
 import com.richjun.campride.global.exception.AuthException;
 import com.richjun.campride.user.domain.User;
 import com.richjun.campride.user.domain.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
+@Slf4j
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
 
     private static final int MAX_TRY_COUNT = 5;
     private static final int FOUR_DIGIT_RANGE = 10000;
@@ -33,8 +35,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
-        System.out.println(oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
@@ -51,27 +51,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
-        String username = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
+        String nickname = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
 
-        OAuth2UserResponse oAuth2UserResponse = new OAuth2UserResponse(username, oAuth2Response.getName(), "ROLE_USER");
+        OAuth2UserResponse oAuth2UserResponse = new OAuth2UserResponse(oAuth2Response.getName(), nickname, "ROLE_USER");
 
-        findOrCreateMember(oAuth2UserResponse.getUsername(), oAuth2UserResponse.getName(),
+        log.info(nickname);
+
+        findOrCreateUser(oAuth2UserResponse.getNickname(), oAuth2UserResponse.getUsername(),
                 oAuth2UserResponse.getRole());
 
         return new CustomOAuth2User(oAuth2UserResponse);
 
     }
 
-    private User findOrCreateMember(final String socialLoginId, final String nickname, String role) {
+    private User findOrCreateUser(final String socialLoginId, final String name, String role) {
         return userRepository.findBySocialLoginId(socialLoginId)
-                .orElseGet(() -> createUser(socialLoginId, nickname, role));
+                .orElseGet(() -> createUser(socialLoginId, name, role));
     }
 
 
-    private User createUser(final String socialLoginId, final String nickname, String role) {
+    private User createUser(final String socialLoginId, final String name, String role) {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
-            final String nicknameWithRandomNumber = nickname + generateRandomFourDigitCode();
+            final String nicknameWithRandomNumber = name + generateRandomFourDigitCode();
             if (!userRepository.existsBySocialLoginId(nicknameWithRandomNumber)) {
                 return userRepository.save(new User(socialLoginId, nicknameWithRandomNumber, role));
             }
