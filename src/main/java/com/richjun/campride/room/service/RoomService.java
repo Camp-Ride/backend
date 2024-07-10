@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,5 +73,10 @@ public class RoomService {
         room.update(roomRequest, departureLocation, destinationLocation);
 
         return room.getId();
+    }
+
+    public Page<RoomResponse> searchRoomsPage(Pageable pageable) {
+
+        return roomRepository.searchRoomsPage(pageable);
     }
 }

@@ -2,6 +2,7 @@ package com.richjun.campride.room.response;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.richjun.campride.global.location.domain.Location;
 import com.richjun.campride.room.domain.Room;
 import com.richjun.campride.room.domain.type.RoomType;
@@ -39,7 +40,6 @@ public class RoomResponse {
 
 
     public static RoomResponse from(Room room) {
-
         return new RoomResponse(room.getId(),
                 room.getLeaderNickname(),
                 room.getTitle(),
