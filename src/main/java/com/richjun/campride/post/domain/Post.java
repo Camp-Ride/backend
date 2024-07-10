@@ -5,10 +5,17 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.domain.Comment;
+import com.richjun.campride.global.location.domain.Location;
 import com.richjun.campride.image.domain.Image;
 import com.richjun.campride.image.domain.ImageFile;
+import com.richjun.campride.image.response.ImagesResponse;
 import com.richjun.campride.like.domain.Like;
+import com.richjun.campride.post.request.PostRequest;
+import com.richjun.campride.room.domain.Room;
+import com.richjun.campride.room.request.RoomRequest;
+import com.richjun.campride.user.domain.User;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -30,7 +37,6 @@ public class Post {
     private Long id;
 
     private String name;
-    private String date;
     private String title;
     private String contents;
 
@@ -40,8 +46,21 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
+    @ElementCollection
+    private List<String> images;
+
+
+    public static Post of(final PostRequest postRequest, final String nickname, final ImagesResponse imagesResponse) {
+        return new Post(
+                null,
+                nickname,
+                postRequest.getTitle(),
+                postRequest.getContents(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                imagesResponse.getImageNames()
+        );
+    }
 
 
 }

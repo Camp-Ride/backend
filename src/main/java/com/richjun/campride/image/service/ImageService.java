@@ -32,7 +32,6 @@ public class ImageService {
                 .map(ImageFile::new)
                 .toList();
         final List<String> imageNames = uploadImages(imageFiles);
-        System.out.println(imageNames.toString());
         return new ImagesResponse(imageNames);
     }
 

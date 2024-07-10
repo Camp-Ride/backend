@@ -43,4 +43,4 @@ src/main/resources/*
 src/main/resources/application-local.yaml
 src/main/resources/application-prod.yaml
 
-src/main/generated/com/richjun/campride/global/location/domain/*
+src/main/generated/*

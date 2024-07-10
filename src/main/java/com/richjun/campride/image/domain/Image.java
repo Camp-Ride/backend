@@ -27,7 +27,7 @@ public class Image {
     private String name;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     public Image(final String name, final Post post) {
