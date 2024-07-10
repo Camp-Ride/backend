@@ -2,6 +2,7 @@ package com.richjun.campride.room.domain.repository.querydsl.impl;
 
 import static com.richjun.campride.room.domain.QRoom.room;
 
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.richjun.campride.room.domain.QRoom;
 import com.richjun.campride.room.domain.Room;
@@ -42,4 +43,42 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
 
         return new PageImpl<>(roomResponses, pageable, total);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<RoomResponse> searchRoomsByDepartureAndDestinationPage(Pageable pageable, String departure,
+                                                                       String destination) {
+
+        System.out.println(departure);
+        System.out.println(destination);
+
+        List<Room> rooms = queryFactory.selectFrom(room)
+                .where(departureEq(departure), destinationEq(destination))
+                .orderBy(room.departureTime.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(RoomResponse::from).toList();
+
+        long total = queryFactory.selectFrom(room)
+                .where(departureEq(departure), destinationEq(destination))
+                .fetchCount();
+
+        return new PageImpl<>(roomResponses, pageable, total);
+    }
+
+
+    private Predicate departureEq(String departure) {
+
+        return departure == null ? null : room.departure.eq(departure);
+    }
+
+    private Predicate destinationEq(String destination) {
+
+        return destination == null ? null : room.destination.eq(destination);
+    }
+
+
 }

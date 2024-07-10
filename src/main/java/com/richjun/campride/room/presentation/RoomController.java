@@ -50,9 +50,17 @@ public class RoomController {
     }
 
 
-    @GetMapping("/room/paging")
+    @GetMapping("/room")
     public ResponseEntity<Page<RoomResponse>> searchRoomsPage(Pageable pageable) {
         return ResponseEntity.ok().body(roomService.searchRoomsPage(pageable));
+    }
+
+    @GetMapping("/room/address")
+    public ResponseEntity<Page<RoomResponse>> searchRoomsByDepartureAndDestinationPage(Pageable pageable,
+                                                                                       @RequestParam(required = false) String departure,
+                                                                                       @RequestParam(required = false) String destination) {
+        return ResponseEntity.ok()
+                .body(roomService.searchRoomsByDepartureAndDestinationPage(pageable, departure, destination));
     }
 
 
