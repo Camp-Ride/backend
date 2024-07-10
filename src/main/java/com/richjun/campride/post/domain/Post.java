@@ -6,7 +6,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.domain.Comment;
 import com.richjun.campride.image.response.ImagesResponse;
-import com.richjun.campride.like.domain.LikeEmotion;
+import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.request.PostRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -38,7 +38,7 @@ public class Post {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LikeEmotion> likes;
+    private List<Like> likes;
 
     @ElementCollection
     private List<String> images;

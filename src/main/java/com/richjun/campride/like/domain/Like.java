@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class LikeEmotion {
+@Table(name = "likeEmotion")
+public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +37,12 @@ public class LikeEmotion {
     private Comment comment;
 
 
-    public LikeEmotion(String username, Post post) {
+    public Like(String username, Post post) {
         this.username = username;
         this.post = post;
     }
 
-    public LikeEmotion(String username, Comment comment) {
+    public Like(String username, Comment comment) {
         this.username = username;
         this.comment = comment;
     }

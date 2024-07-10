@@ -2,7 +2,7 @@ package com.richjun.campride.comment.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.richjun.campride.like.domain.LikeEmotion;
+import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.domain.Post;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -34,7 +34,7 @@ public class Comment {
     private Post post;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LikeEmotion> likes;
+    private List<Like> likes;
 
 
 }
