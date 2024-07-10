@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Like {
+public class LikeEmotion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +35,12 @@ public class Like {
     private Comment comment;
 
 
-    public Like(String username, Post post) {
+    public LikeEmotion(String username, Post post) {
         this.username = username;
         this.post = post;
     }
 
-    public Like(String username, Comment comment) {
+    public LikeEmotion(String username, Comment comment) {
         this.username = username;
         this.comment = comment;
     }

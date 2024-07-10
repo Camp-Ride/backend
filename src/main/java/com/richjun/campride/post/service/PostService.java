@@ -9,11 +9,14 @@ import com.richjun.campride.image.service.ImageService;
 import com.richjun.campride.post.domain.Post;
 import com.richjun.campride.post.domain.repository.PostRepository;
 import com.richjun.campride.post.request.PostRequest;
+import com.richjun.campride.post.response.PostResponse;
 import com.richjun.campride.user.domain.User;
 import com.richjun.campride.user.domain.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,5 +44,9 @@ public class PostService {
         Post post = Post.of(postRequest, user.getNickname(), imagesResponse);
 
         return postRepository.save(post).getId();
+    }
+
+    public Page<PostResponse> searchPostsPage(Pageable pageable) {
+        return postRepository.searchPostsPage(pageable);
     }
 }

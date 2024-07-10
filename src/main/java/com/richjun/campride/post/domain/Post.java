@@ -5,15 +5,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.domain.Comment;
-import com.richjun.campride.global.location.domain.Location;
-import com.richjun.campride.image.domain.Image;
-import com.richjun.campride.image.domain.ImageFile;
 import com.richjun.campride.image.response.ImagesResponse;
-import com.richjun.campride.like.domain.Like;
+import com.richjun.campride.like.domain.LikeEmotion;
 import com.richjun.campride.post.request.PostRequest;
-import com.richjun.campride.room.domain.Room;
-import com.richjun.campride.room.request.RoomRequest;
-import com.richjun.campride.user.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -44,7 +38,7 @@ public class Post {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes;
+    private List<LikeEmotion> likes;
 
     @ElementCollection
     private List<String> images;

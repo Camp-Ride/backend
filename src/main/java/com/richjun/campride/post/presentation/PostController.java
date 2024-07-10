@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.post.request.PostRequest;
+import com.richjun.campride.post.response.PostResponse;
 import com.richjun.campride.post.service.PostService;
 import com.richjun.campride.room.request.RoomRequest;
 import com.richjun.campride.room.response.RoomResponse;
@@ -45,6 +46,11 @@ public class PostController {
 
 
         return ResponseEntity.ok().body(postService.create(oAuth2User,postRequest, images));
+    }
+
+    @GetMapping("/post")
+    public ResponseEntity<Page<PostResponse>> searchPostsPage(Pageable pageable) {
+        return ResponseEntity.ok().body(postService.searchPostsPage(pageable));
     }
 
 
