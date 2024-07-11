@@ -51,10 +51,12 @@ public class PostService {
         return postRepository.searchPostsPage(pageable);
     }
 
-//    public PostResponse getPost(Long id) {
-//
-//        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
-//
-//
-//    }
+
+    public PostResponse getPost(Long id) {
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        return PostResponse.of(post);
+    }
+
 }

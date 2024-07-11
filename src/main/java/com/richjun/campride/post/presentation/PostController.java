@@ -52,10 +52,10 @@ public class PostController {
         return ResponseEntity.ok().body(postService.searchPostsPage(pageable));
     }
 
-//    @GetMapping("/post/{id}")
-//    public ResponseEntity<PostResponse> getPost(@RequestParam Long id) {
-//        return ResponseEntity.ok().body(postService.getPost(pageable));
-//    }
-//
+    @GetMapping("/post/{id}")
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+        return ResponseEntity.ok().body(postService.getPost(id));
+    }
+
 
 }
