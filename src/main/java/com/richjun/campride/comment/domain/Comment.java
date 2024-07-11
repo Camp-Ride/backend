@@ -2,6 +2,7 @@ package com.richjun.campride.comment.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.richjun.campride.comment.request.CommentRequest;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.domain.Post;
 import jakarta.persistence.CascadeType;
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,4 +38,14 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    public static Comment of(CommentRequest commentRequest, String nickname, Post post) {
+        return new Comment(
+                null,
+                nickname,
+                commentRequest.getContent(),
+                post,
+                new ArrayList<>()
+        );
+
+    }
 }

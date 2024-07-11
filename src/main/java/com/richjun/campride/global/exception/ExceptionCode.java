@@ -16,6 +16,8 @@ public enum ExceptionCode {
 
     NOT_FOUND_USER_ID(3001, "해당하는 User Id를 찾지 못했습니다."),
     NOT_FOUND_ROOM_ID(3002, "해당하는 Room Id를 찾지 못했습니다."),
+    NOT_FOUND_POST_ID(3003, "해당하는 Post Id를 찾지 못했습니다."),
+
 
     NOT_ROOM_LEADER(4001, "해당하는 Room의 방장이 아니기 때문에 요청을 실행할 수 없습니다."),
     NOT_POST_AUTHOR(4002, "해당하는 Post의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),

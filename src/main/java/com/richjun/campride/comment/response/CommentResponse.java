@@ -14,13 +14,14 @@ import lombok.Getter;
 public class CommentResponse {
     private Long id;
     private String nickname;
+    private String content;
     private List<LikeResponse> likeResponses;
 
 
     public static List<CommentResponse> from(List<Comment> comments) {
 
         return comments.stream()
-                .map((comment) -> new CommentResponse(comment.getId(), comment.getAuthor(),
+                .map((comment) -> new CommentResponse(comment.getId(), comment.getAuthor(), comment.getContent(),
                         LikeResponse.from(comment.getLikes()))).collect(Collectors.toList());
     }
 
