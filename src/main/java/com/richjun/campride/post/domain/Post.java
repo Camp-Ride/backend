@@ -30,7 +30,7 @@ public class Post {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private String name;
+    private String nickname;
     private String title;
     private String contents;
 

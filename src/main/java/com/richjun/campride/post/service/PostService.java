@@ -59,4 +59,11 @@ public class PostService {
         return PostResponse.of(post);
     }
 
+    public Long deletePost(Long id) {
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        postRepository.delete(post);
+
+        return post.getId();
+    }
 }

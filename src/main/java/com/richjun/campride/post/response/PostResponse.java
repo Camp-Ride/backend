@@ -22,7 +22,7 @@ public class PostResponse {
     public static PostResponse of(Post post) {
         return new PostResponse(
                 post.getId(),
-                post.getName(),
+                post.getNickname(),
                 post.getTitle(),
                 LikeResponse.from(post.getLikes()),
                 CommentResponse.from(post.getComments()),

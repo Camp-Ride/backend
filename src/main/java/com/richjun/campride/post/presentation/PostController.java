@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,14 @@ public class PostController {
     @GetMapping("/post/{id}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         return ResponseEntity.ok().body(postService.getPost(id));
+    }
+
+
+    @DeleteMapping("/post/{id}")
+    @PreAuthorize("@postPermissionService.isCreatedBy(#id, #oAuth2User)")
+    public ResponseEntity<Long> deletePost(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
+                                           @PathVariable Long id) {
+        return ResponseEntity.ok().body(postService.deletePost(id));
     }
 
 
