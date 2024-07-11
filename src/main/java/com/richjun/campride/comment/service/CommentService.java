@@ -48,4 +48,13 @@ public class CommentService {
 
         return comment.getId();
     }
+
+    public Long deleteComment(Long id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMMENT_ID));
+
+        commentRepository.delete(comment);
+
+        return comment.getId();
+    }
 }

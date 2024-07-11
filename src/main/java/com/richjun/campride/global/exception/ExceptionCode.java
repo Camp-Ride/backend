@@ -22,6 +22,7 @@ public enum ExceptionCode {
 
     NOT_ROOM_LEADER(4001, "해당하는 Room의 방장이 아니기 때문에 요청을 실행할 수 없습니다."),
     NOT_POST_AUTHOR(4002, "해당하는 Post의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),
+    NOT_COMMENT_AUTHOR(4003,"해당하는 댓글의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),
 
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
 

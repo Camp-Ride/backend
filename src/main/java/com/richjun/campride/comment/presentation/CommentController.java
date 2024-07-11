@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,11 +37,20 @@ public class CommentController {
     }
 
     @PutMapping("/comment/{id}")
-    @PreAuthorize("@postPermissionService.isCreatedBy(#id, #oAuth2User)")
-    public ResponseEntity<Long> updateComment(@AuthenticationPrincipal CustomOAuth2User oAuth2User, @PathVariable Long id,
-                                           @RequestBody @Valid final CommentRequest commentRequest) {
+    @PreAuthorize("@commentPermissionService.isCreatedBy(#id, #oAuth2User)")
+    public ResponseEntity<Long> updateComment(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
+                                              @PathVariable Long id,
+                                              @RequestBody @Valid final CommentRequest commentRequest) {
 
         return ResponseEntity.ok().body(commentService.updateRoom(id, commentRequest));
+    }
+
+    @DeleteMapping("/comment/{id}")
+    @PreAuthorize("@commentPermissionService.isCreatedBy(#id, #oAuth2User)")
+    public ResponseEntity<Long> deleteComment(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
+                                              @PathVariable Long id) {
+
+        return ResponseEntity.ok().body(commentService.deleteComment(id));
     }
 
 
