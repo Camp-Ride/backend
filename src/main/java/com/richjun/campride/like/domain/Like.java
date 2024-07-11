@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.domain.Comment;
 import com.richjun.campride.global.common.BaseEntity;
+import com.richjun.campride.like.domain.type.ContentType;
 import com.richjun.campride.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,25 +41,25 @@ public class Like extends BaseEntity {
     private Comment comment;
 
     @Enumerated(EnumType.STRING)
-    private LikeType likeType;
+    private ContentType likeType;
 
-    public Like(String username, Post post, LikeType likeType) {
+    public Like(String username, Post post, ContentType likeType) {
         this.nickname = username;
         this.post = post;
         this.likeType = likeType;
     }
 
-    public Like(String username, Comment comment, LikeType likeType) {
+    public Like(String username, Comment comment, ContentType likeType) {
         this.nickname = username;
         this.comment = comment;
         this.likeType = likeType;
     }
 
-    public static Like postLike(String username, Post post, LikeType likeType) {
+    public static Like postLike(String username, Post post, ContentType likeType) {
         return new Like(username, post, likeType);
     }
 
-    public static Like commentLike(String username, Comment comment, LikeType likeType) {
+    public static Like commentLike(String username, Comment comment, ContentType likeType) {
         return new Like(username, comment, likeType);
     }
 

@@ -9,9 +9,8 @@ import com.richjun.campride.comment.domain.Comment;
 import com.richjun.campride.comment.repository.CommentRepository;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
-import com.richjun.campride.global.exception.ExceptionCode;
+import com.richjun.campride.like.domain.type.ContentType;
 import com.richjun.campride.like.domain.Like;
-import com.richjun.campride.like.domain.LikeType;
 import com.richjun.campride.like.domain.repository.LikeRepository;
 import com.richjun.campride.like.request.LikeRequest;
 import com.richjun.campride.post.domain.Post;
@@ -48,7 +47,7 @@ public class LikeService {
 
         Long likeId = null;
 
-        if (likeRequest.getLikeType().equals(LikeType.POST)) {
+        if (likeRequest.getLikeType().equals(ContentType.POST)) {
             Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(
                     NOT_FOUND_POST_ID));
 
@@ -57,7 +56,7 @@ public class LikeService {
             likeId = postLike.getId();
         }
 
-        if (likeRequest.getLikeType().equals(LikeType.COMMENT)) {
+        if (likeRequest.getLikeType().equals(ContentType.COMMENT)) {
             Comment comment = commentRepository.findById(id)
                     .orElseThrow(() -> new BadRequestException(
                             NOT_FOUND_COMMENT_ID));

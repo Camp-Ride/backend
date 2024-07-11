@@ -19,6 +19,7 @@ public enum ExceptionCode {
     NOT_FOUND_POST_ID(3003, "해당하는 Post Id를 찾지 못했습니다."),
     NOT_FOUND_COMMENT_ID(3004, "해당하는 Comment Id를 찾지 못했습니다."),
     NOT_FOUND_LIKE_ID(3005, "해당하는 Like Id를 찾지 못했습니다."),
+    NOT_FOUND_CONTENT_TYPE(3005, "해당하는 Content Type을 찾지 못했습니다."),
 
 
 
