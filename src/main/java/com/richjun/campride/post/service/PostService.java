@@ -78,7 +78,7 @@ public class PostService {
     }
 
 
-    public Long updatePost(Long id, PostRequest postRequest, List<MultipartFile> images) {
+    public Long updatePost(final Long id, final PostRequest postRequest, final List<MultipartFile> images) {
 
         Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
         ImagesResponse imagesResponse = imageService.save(images);
