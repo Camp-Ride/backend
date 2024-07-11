@@ -41,8 +41,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
 
         List<PostResponse> postResponses = posts.stream()
-                .map((post) -> PostResponse.of(post, LikeResponse.from(post.getLikes()),
-                        CommentResponse.from(post.getComments()))).collect(Collectors.toList());
+                .map(PostResponse::of).collect(Collectors.toList());
 
         long total = queryFactory.selectFrom(post)
                 .fetchCount();

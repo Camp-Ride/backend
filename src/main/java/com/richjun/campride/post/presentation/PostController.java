@@ -44,14 +44,18 @@ public class PostController {
 
         PostRequest postRequest = objectMapper.readValue(postRequestStr, PostRequest.class);
 
-
-        return ResponseEntity.ok().body(postService.create(oAuth2User,postRequest, images));
+        return ResponseEntity.ok().body(postService.create(oAuth2User, postRequest, images));
     }
 
-    @GetMapping("/post")
+    @GetMapping("/post/paging")
     public ResponseEntity<Page<PostResponse>> searchPostsPage(Pageable pageable) {
         return ResponseEntity.ok().body(postService.searchPostsPage(pageable));
     }
 
+//    @GetMapping("/post/{id}")
+//    public ResponseEntity<PostResponse> getPost(@RequestParam Long id) {
+//        return ResponseEntity.ok().body(postService.getPost(pageable));
+//    }
+//
 
 }

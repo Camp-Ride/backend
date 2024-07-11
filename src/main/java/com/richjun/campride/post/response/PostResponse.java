@@ -19,13 +19,13 @@ public class PostResponse {
     private List<String> imageNames;
 
 
-    public static PostResponse of(Post post, List<LikeResponse> likeResponses, List<CommentResponse> commentResponses) {
+    public static PostResponse of(Post post) {
         return new PostResponse(
                 post.getId(),
                 post.getName(),
                 post.getTitle(),
-                likeResponses,
-                commentResponses,
+                LikeResponse.from(post.getLikes()),
+                CommentResponse.from(post.getComments()),
                 post.getImages()
 
         );

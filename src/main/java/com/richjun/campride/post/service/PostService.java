@@ -4,6 +4,7 @@ import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
+import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.image.response.ImagesResponse;
 import com.richjun.campride.image.service.ImageService;
 import com.richjun.campride.post.domain.Post;
@@ -49,4 +50,11 @@ public class PostService {
     public Page<PostResponse> searchPostsPage(Pageable pageable) {
         return postRepository.searchPostsPage(pageable);
     }
+
+//    public PostResponse getPost(Long id) {
+//
+//        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+//
+//
+//    }
 }
