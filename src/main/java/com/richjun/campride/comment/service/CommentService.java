@@ -31,12 +31,20 @@ public class CommentService {
 
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
-
         Post post = postRepository.findById(commentRequest.getPostId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_POST_ID));
 
         Comment comment = Comment.of(commentRequest, user.getNickname(), post);
         commentRepository.save(comment);
+
+        return comment.getId();
+    }
+
+    public Long updateRoom(Long id, CommentRequest commentRequest) {
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMMENT_ID));
+        comment.update(commentRequest);
 
         return comment.getId();
     }

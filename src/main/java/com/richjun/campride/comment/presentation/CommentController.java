@@ -5,12 +5,16 @@ import com.richjun.campride.comment.request.CommentRequest;
 import com.richjun.campride.comment.service.CommentService;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.post.request.PostRequest;
+import com.richjun.campride.room.request.RoomRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -29,6 +33,14 @@ public class CommentController {
                                            @RequestBody @Valid final CommentRequest commentRequest) {
 
         return ResponseEntity.ok().body(commentService.addComment(oAuth2User, commentRequest));
+    }
+
+    @PutMapping("/comment/{id}")
+    @PreAuthorize("@postPermissionService.isCreatedBy(#id, #oAuth2User)")
+    public ResponseEntity<Long> updateComment(@AuthenticationPrincipal CustomOAuth2User oAuth2User, @PathVariable Long id,
+                                           @RequestBody @Valid final CommentRequest commentRequest) {
+
+        return ResponseEntity.ok().body(commentService.updateRoom(id, commentRequest));
     }
 
 
