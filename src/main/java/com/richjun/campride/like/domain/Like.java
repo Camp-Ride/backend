@@ -29,7 +29,7 @@ public class Like extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String nickname;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -43,13 +43,13 @@ public class Like extends BaseEntity {
     private LikeType likeType;
 
     public Like(String username, Post post, LikeType likeType) {
-        this.username = username;
+        this.nickname = username;
         this.post = post;
         this.likeType = likeType;
     }
 
     public Like(String username, Comment comment, LikeType likeType) {
-        this.username = username;
+        this.nickname = username;
         this.comment = comment;
         this.likeType = likeType;
     }

@@ -15,6 +15,6 @@ public class LikeResponse {
     public static List<LikeResponse> from(List<Like> likes) {
 
         return likes.stream()
-                .map((like) -> new LikeResponse(like.getId(), like.getUsername())).collect(Collectors.toList());
+                .map((like) -> new LikeResponse(like.getId(), like.getNickname())).collect(Collectors.toList());
     }
 }

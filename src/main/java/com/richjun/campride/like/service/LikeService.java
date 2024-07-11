@@ -1,5 +1,6 @@
 package com.richjun.campride.like.service;
 
+import static com.richjun.campride.global.exception.ExceptionCode.*;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_COMMENT_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_POST_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
@@ -8,6 +9,7 @@ import com.richjun.campride.comment.domain.Comment;
 import com.richjun.campride.comment.repository.CommentRepository;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
+import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.like.domain.LikeType;
 import com.richjun.campride.like.domain.repository.LikeRepository;
@@ -67,4 +69,14 @@ public class LikeService {
 
         return likeId;
     }
+
+    public Long unLike(Long id) {
+
+        Like like = likeRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_LIKE_ID));
+        likeRepository.delete(like);
+
+        return like.getId();
+    }
+
+
 }

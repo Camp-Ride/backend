@@ -10,7 +10,9 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,14 @@ public class LikeController {
                                      @RequestBody @Valid final LikeRequest likeRequest) {
 
         return ResponseEntity.ok().body(likeService.like(oAuth2User, id, likeRequest));
+    }
+
+    @DeleteMapping("/unlike/{id}")
+    @PreAuthorize("@likePermissionService.isCreatedBy(#id, #oAuth2User)")
+    public ResponseEntity<Long> unLike(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+                                       @PathVariable final Long id) {
+
+        return ResponseEntity.ok().body(likeService.unLike(id));
     }
 
 
