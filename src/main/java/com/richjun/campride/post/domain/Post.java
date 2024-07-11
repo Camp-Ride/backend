@@ -56,5 +56,9 @@ public class Post {
         );
     }
 
-
+    public void update(String title, String contents, List<String> images) {
+        this.title = title;
+        this.contents = contents;
+        this.images = images;
+    }
 }

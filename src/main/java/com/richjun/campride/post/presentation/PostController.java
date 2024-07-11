@@ -67,4 +67,16 @@ public class PostController {
     }
 
 
+    @PutMapping("/post/{id}")
+    @PreAuthorize("@postPermissionService.isCreatedBy(#id, #oAuth2User)")
+    public ResponseEntity<Long> updatePost(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+                                           @RequestPart("postRequest") @Valid final String postRequestStr,
+                                           @RequestPart("images") final List<MultipartFile> images,
+                                           @PathVariable Long id) throws JsonProcessingException {
+        PostRequest postRequest = objectMapper.readValue(postRequestStr, PostRequest.class);
+
+        return ResponseEntity.ok().body(postService.updatePost(id, postRequest, images));
+    }
+
+
 }
