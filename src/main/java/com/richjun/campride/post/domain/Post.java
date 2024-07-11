@@ -5,6 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.domain.Comment;
+import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.image.response.ImagesResponse;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.request.PostRequest;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Post {
+public class Post  extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

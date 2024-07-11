@@ -3,6 +3,7 @@ package com.richjun.campride.like.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.domain.Comment;
+import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "likeEmotion")
-public class Like {
+public class Like  extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

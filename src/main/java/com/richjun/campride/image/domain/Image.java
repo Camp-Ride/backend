@@ -4,6 +4,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.post.domain.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Image {
+public class Image  extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

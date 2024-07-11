@@ -3,6 +3,7 @@ package com.richjun.campride.comment.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.richjun.campride.comment.request.CommentRequest;
+import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.domain.Post;
 import jakarta.persistence.CascadeType;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

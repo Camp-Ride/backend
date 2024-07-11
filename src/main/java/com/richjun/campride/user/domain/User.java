@@ -4,6 +4,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.room.domain.Room;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "app_user")
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

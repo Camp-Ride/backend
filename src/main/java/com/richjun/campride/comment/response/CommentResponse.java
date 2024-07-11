@@ -4,6 +4,7 @@ import com.richjun.campride.comment.domain.Comment;
 import com.richjun.campride.like.response.LikeResponse;
 import com.richjun.campride.room.response.ParticipantResponse;
 import com.richjun.campride.user.domain.User;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -16,13 +17,13 @@ public class CommentResponse {
     private String nickname;
     private String content;
     private List<LikeResponse> likeResponses;
-
+    private LocalDateTime createdAt;
 
     public static List<CommentResponse> from(List<Comment> comments) {
 
         return comments.stream()
                 .map((comment) -> new CommentResponse(comment.getId(), comment.getAuthor(), comment.getContent(),
-                        LikeResponse.from(comment.getLikes()))).collect(Collectors.toList());
+                        LikeResponse.from(comment.getLikes()), comment.getCreatedAt())).collect(Collectors.toList());
     }
 
 }

@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.global.location.domain.Location;
 import com.richjun.campride.room.domain.type.RoomType;
 import com.richjun.campride.room.request.RoomRequest;
@@ -39,7 +40,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Room {
+public class Room  extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
