@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.room.domain.Room;
+import com.richjun.campride.user.request.UserRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -40,5 +41,9 @@ public class User extends BaseEntity {
         this.socialLoginId = socialLoginId;
         this.nickname = nickname;
         this.role = role;
+    }
+
+    public void update(UserRequest userRequest) {
+        this.nickname = userRequest.getNickname();
     }
 }
