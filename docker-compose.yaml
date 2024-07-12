@@ -2,21 +2,32 @@ version: '3.8'
 services:
   kafka:
     image: 'bitnami/kafka:latest'
+    restart: always
+    ports:
+      - '9094:9094'
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_CLUSTER_ID=SnakBk5ASCy57YnMCL48hg
     networks:
       - app-tier
+      - campride_network
+    volumes:
+      - 'kafka_data:/bitnami/kafka/data'
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     restart: always
     container_name: kafka-ui
     ports:
-      - '10001:8081'
+      - '10005:8081'
     environment:
       - SERVER_PORT=8081
       - KAFKA_CLUSTERS_0_NAME=campride-kafka
@@ -26,6 +37,8 @@ services:
       - KAFKA_CLUSTERS_0_AUDIT_CONSOLEAUDITENABLED=true
     networks:
       - app-tier
+      - campride_network
+
   db:
     container_name: campride_db
     image: mysql
@@ -41,6 +54,7 @@ services:
     restart: always
     networks:
       - campride_network
+      - app-tier
     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
 
   redis:
@@ -51,6 +65,7 @@ services:
     restart: always
     networks:
       - campride_network
+      - app-tier
 
   app:
     container_name: campride-api-server
@@ -68,9 +83,12 @@ services:
     restart: always
     networks:
       - campride_network
+      - app-tier
 
 volumes:
   db-data:
+  kafka_data:
+    driver: local
 
 networks:
   campride_network:
