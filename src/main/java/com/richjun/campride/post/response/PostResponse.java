@@ -15,6 +15,7 @@ public class PostResponse {
     private Long id;
     private String name;
     private String title;
+    private String contents;
     private List<LikeResponse> likeResponses;
     private List<CommentResponse> commentResponses;
     private List<String> imageNames;
@@ -26,6 +27,7 @@ public class PostResponse {
                 post.getId(),
                 post.getNickname(),
                 post.getTitle(),
+                post.getContents(),
                 LikeResponse.from(post.getLikes()),
                 CommentResponse.from(post.getComments()),
                 post.getImages(),
