@@ -20,13 +20,18 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private static final int MAX_IMAGE_LIST_SIZE = 5;
+    private static final int MAX_IMAGE_LIST_SIZE = 3;
     private static final int EMPTY_LIST_SIZE = 0;
 
     private final ImageUploader imageUploader;
     private final ApplicationEventPublisher publisher;
 
     public ImagesResponse save(final List<MultipartFile> images) {
+
+        if (images == null) {
+            return new ImagesResponse();
+        }
+
         validateSizeOfImages(images);
         final List<ImageFile> imageFiles = images.stream()
                 .map(ImageFile::new)
@@ -38,7 +43,7 @@ public class ImageService {
     private List<String> uploadImages(final List<ImageFile> imageFiles) {
         try {
             final List<String> uploadedImageNames = imageUploader.uploadImages(imageFiles);
-            if(uploadedImageNames.size() != imageFiles.size()) {
+            if (uploadedImageNames.size() != imageFiles.size()) {
                 throw new ImageException(INVALID_IMAGE_PATH);
             }
             return uploadedImageNames;

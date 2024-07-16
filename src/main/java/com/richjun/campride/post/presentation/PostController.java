@@ -40,7 +40,7 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<Long> createPost(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
                                            @RequestPart("postRequest") @Valid final String postRequestStr,
-                                           @RequestPart("images") final List<MultipartFile> images)
+                                           @RequestPart(value = "images", required = false) final List<MultipartFile> images)
             throws JsonProcessingException {
 
         PostRequest postRequest = objectMapper.readValue(postRequestStr, PostRequest.class);
