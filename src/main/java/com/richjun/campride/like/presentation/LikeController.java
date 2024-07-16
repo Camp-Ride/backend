@@ -41,11 +41,11 @@ public class LikeController {
     }
 
     @DeleteMapping("/unlike/{id}")
-    @PreAuthorize("@likePermissionService.isCreatedBy(#id, #oAuth2User)")
+    @PreAuthorize("@likePermissionService.isCreatedBy(#id, #likeRequest.likeType, #oAuth2User)")
     public ResponseEntity<Long> unLike(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
-                                       @PathVariable final Long id) {
+                                       @PathVariable final Long id, @RequestBody @Valid final LikeRequest likeRequest) {
 
-        return ResponseEntity.ok().body(likeService.unLike(id));
+        return ResponseEntity.ok().body(likeService.unLike(oAuth2User,id, likeRequest));
     }
 
 

@@ -4,12 +4,13 @@ import static com.richjun.campride.global.exception.ExceptionCode.*;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_COMMENT_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_POST_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
+import static com.richjun.campride.like.domain.type.ContentType.COMMENT;
+import static com.richjun.campride.like.domain.type.ContentType.POST;
 
 import com.richjun.campride.comment.domain.Comment;
 import com.richjun.campride.comment.repository.CommentRepository;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
-import com.richjun.campride.like.domain.type.ContentType;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.like.domain.repository.LikeRepository;
 import com.richjun.campride.like.request.LikeRequest;
@@ -47,7 +48,7 @@ public class LikeService {
 
         Long likeId = null;
 
-        if (likeRequest.getLikeType().equals(ContentType.POST)) {
+        if (likeRequest.getLikeType().equals(POST)) {
             Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(
                     NOT_FOUND_POST_ID));
 
@@ -56,7 +57,7 @@ public class LikeService {
             likeId = postLike.getId();
         }
 
-        if (likeRequest.getLikeType().equals(ContentType.COMMENT)) {
+        if (likeRequest.getLikeType().equals(COMMENT)) {
             Comment comment = commentRepository.findById(id)
                     .orElseThrow(() -> new BadRequestException(
                             NOT_FOUND_COMMENT_ID));
@@ -69,13 +70,25 @@ public class LikeService {
         return likeId;
     }
 
-    public Long unLike(Long id) {
+    public Long unLike(final CustomOAuth2User oAuth2User, final Long id, final LikeRequest likeRequest) {
 
-        Like like = likeRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_LIKE_ID));
-        likeRepository.delete(like);
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
-        return like.getId();
+        Long likeId = null;
+
+        if (likeRequest.getLikeType().equals(POST)) {
+            Like like = likeRepository.findByPostIdAndNickname(id, user.getNickname())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_LIKE_ID));
+            likeRepository.delete(like);
+        }
+        if (likeRequest.getLikeType().equals(COMMENT)) {
+            Like like = likeRepository.findByCommentIdAndNickname(id, user.getNickname())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_LIKE_ID));
+            likeRepository.delete(like);
+        }
+
+        return likeId;
     }
-
 
 }
