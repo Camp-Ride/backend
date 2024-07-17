@@ -1,6 +1,7 @@
 package com.richjun.campride.post.service;
 
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
+import static java.lang.Enum.valueOf;
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
@@ -83,7 +84,12 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
         ImagesResponse imagesResponse = imageService.save(images);
 
-        post.update(postRequest.getTitle(), postRequest.getContents(), imagesResponse.getImageNames());
+        List<String> imageNames = imagesResponse.getImageNames();
+        if (imageNames != null && !imageNames.isEmpty()) {
+            postRequest.getImageNames().addAll(imageNames);
+        }
+
+        post.update(postRequest.getTitle(), postRequest.getContents(), postRequest.getImageNames());
 
         return post.getId();
     }

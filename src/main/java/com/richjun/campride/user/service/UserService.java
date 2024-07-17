@@ -34,6 +34,7 @@ public class UserService {
     public UserResponse updateMyInfo(CustomOAuth2User customOAuth2User, UserRequest userRequest) {
         User user = userRepository.findBySocialLoginId(customOAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
         user.update(userRequest);
         return UserResponse.from(user);
     }

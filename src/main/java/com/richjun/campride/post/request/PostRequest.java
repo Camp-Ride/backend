@@ -1,7 +1,9 @@
 package com.richjun.campride.post.request;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +20,7 @@ public class PostRequest {
     @NotBlank(message = "내용을 입력해 주세요.")
     private String contents;
 
-
-
-
-
-
-
+    @Nullable
+    private List<String> imageNames;
 
 }
