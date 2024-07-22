@@ -9,6 +9,7 @@ import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.image.response.ImagesResponse;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.request.PostRequest;
+import com.richjun.campride.report.domain.Report;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -44,6 +45,9 @@ public class Post  extends BaseEntity {
     @ElementCollection
     private List<String> images;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports;
+
 
     public static Post of(final PostRequest postRequest, final String nickname, final ImagesResponse imagesResponse) {
         return new Post(
@@ -53,7 +57,8 @@ public class Post  extends BaseEntity {
                 postRequest.getContents(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                imagesResponse.getImageNames()
+                imagesResponse.getImageNames(),
+                new ArrayList<>()
         );
     }
 

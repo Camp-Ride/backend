@@ -6,6 +6,7 @@ import com.richjun.campride.comment.request.CommentRequest;
 import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.like.domain.Like;
 import com.richjun.campride.post.domain.Post;
+import com.richjun.campride.report.domain.Report;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,12 +40,16 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports;
+
     public static Comment of(CommentRequest commentRequest, String nickname, Post post) {
         return new Comment(
                 null,
                 nickname,
                 commentRequest.getContent(),
                 post,
+                new ArrayList<>(),
                 new ArrayList<>()
         );
 
