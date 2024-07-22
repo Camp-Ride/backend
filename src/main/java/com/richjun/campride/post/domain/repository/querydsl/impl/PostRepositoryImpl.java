@@ -48,4 +48,21 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         return new PageImpl<>(postResponses, pageable, total);
     }
+
+    @Override
+    public Page<PostResponse> searchPostsPageByLikes(Pageable pageable) {
+        List<Post> posts = queryFactory.selectFrom(post)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.likes.size().desc())
+                .fetch();
+
+        List<PostResponse> postResponses = posts.stream()
+                .map(PostResponse::of).collect(Collectors.toList());
+
+        long total = queryFactory.selectFrom(post)
+                .fetchCount();
+
+        return new PageImpl<>(postResponses, pageable, total);
+    }
 }

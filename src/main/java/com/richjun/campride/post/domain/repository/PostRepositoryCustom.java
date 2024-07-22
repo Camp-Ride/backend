@@ -9,5 +9,5 @@ public interface PostRepositoryCustom {
 
     Page<PostResponse> searchPostsPage(Pageable pageable);
 
-
+    Page<PostResponse> searchPostsPageByLikes(Pageable pageable);
 }
