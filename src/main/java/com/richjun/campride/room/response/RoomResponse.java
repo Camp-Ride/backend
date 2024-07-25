@@ -37,6 +37,7 @@ public class RoomResponse {
     private int maxParticipants;
     private RoomType roomType;
     private List<ParticipantResponse> participants;
+    private LocalDateTime createdAt;
 
 
     public static RoomResponse from(Room room) {
@@ -50,7 +51,8 @@ public class RoomResponse {
                 room.getDepartureTime(),
                 room.getMaxParticipants(),
                 room.getRoomType(),
-                ParticipantResponse.from(room.getParticipants()));
+                ParticipantResponse.from(room.getParticipants()),
+                room.getCreatedAt());
     }
 
 
