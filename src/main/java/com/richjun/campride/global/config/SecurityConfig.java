@@ -4,7 +4,9 @@ import com.richjun.campride.global.auth.handler.CustomSuccessHandler;
 import com.richjun.campride.global.auth.service.CustomOAuth2UserService;
 import com.richjun.campride.global.jwt.JwtAuthenticationFilter;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
+
 import java.util.Collections;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,7 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import jakarta.servlet.DispatcherType;
 
+
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -50,40 +55,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        //csrf disable
-        http.csrf(AbstractHttpConfigurer::disable);
-
-        //From 로그인 방식 disable
-        http.formLogin(AbstractHttpConfigurer::disable);
-
-        //HTTP Basic 인증 방식 disable
-        http.httpBasic(AbstractHttpConfigurer::disable);
-
-        http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable);
-
-        http.formLogin(login -> login.loginPage("/"));
-
-        //JWTFilter 추가
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
-        //경로별 인가 작업
-        http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/login").permitAll()
-                .requestMatchers("login/oauth2/**").permitAll()
-                .anyRequest().authenticated());
-
-        //oauth2
-        http.oauth2Login((oauth2) -> oauth2
-                .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                        .userService(customOAuth2UserService))
-                .successHandler(customSuccessHandler));
-
-        //세션 설정 : STATELESS
-        http.sessionManagement((session) -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                        .requestMatchers("/", "/login", "login/oauth2/**", "/ws/**").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(
+                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService))
+                        .successHandler(customSuccessHandler))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
+
     }
 }
