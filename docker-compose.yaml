@@ -67,6 +67,13 @@ services:
       - campride_network
       - app-tier
 
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: redis_insight
+    restart: always
+    ports:
+      - "5540:5540"
+
   app:
     container_name: campride-api-server
     build: .
