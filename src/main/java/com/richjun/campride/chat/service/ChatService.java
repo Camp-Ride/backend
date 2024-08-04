@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.chat.domain.ChatMessage;
 import com.richjun.campride.chat.domain.ChatMessageType;
+import com.richjun.campride.chat.repository.ChatMessageRedisRepository;
 import com.richjun.campride.chat.response.ChatMessageResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatService {
 
     private final StringRedisTemplate redisTemplate;
+    private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ObjectMapper objectMapper;
 
@@ -43,16 +45,13 @@ public class ChatService {
     }
 
     public void addMessage(String roomId, String messageContent) {
-        redisTemplate.opsForStream().add("room" + roomId, Map.of("message", messageContent));
+        chatMessageRedisRepository.addMessage(roomId, messageContent);
     }
 
     public List<ChatMessageResponse> getMessages(String roomId, String startOffset, int count) {
-        StreamOperations<String, String, Map<String, String>> streamOps = redisTemplate.opsForStream();
 
-        List<MapRecord<String, String, Map<String, String>>> records = streamOps.read(
-                StreamReadOptions.empty().count(count),
-                StreamOffset.create(roomId, ReadOffset.from(startOffset))
-        );
+        List<MapRecord<String, String, Map<String, String>>> records = chatMessageRedisRepository.getMessages(
+                roomId, startOffset, count);
 
         return records.stream()
                 .map(record -> {
