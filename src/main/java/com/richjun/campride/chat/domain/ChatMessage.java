@@ -1,17 +1,20 @@
 package com.richjun.campride.chat.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChatMessage {
+public class ChatMessage implements Serializable {
     private Long roomId;
     private String userId;
     private String text;
@@ -27,21 +30,20 @@ public class ChatMessage {
     @JsonProperty("isSender")
     private boolean isSender;
 
-    // Getters and Setters
 
     @Override
     public String toString() {
-        return "ChatMessage{" +
-                "roomId=" + roomId +
-                ", userId='" + userId + '\'' +
-                ", text='" + text + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", timestamp=" + timestamp +
-                ", isSender=" + isSender +
-                ", chatMessageType=" + chatMessageType +
-                ", reactions=" + reactions +
-                ", isReply=" + isReply +
-                ", replyingMessage='" + replyingMessage + '\'' +
+        return "{" +
+                "\"roomId\":" + roomId + "," +
+                "\"userId\":\"" + userId + "\"," +
+                "\"text\":\"" + text + "\"," +
+                "\"imageUrl\":\"" + imageUrl + "\"," +
+                "\"timestamp\":\"" + timestamp + "\"," +
+                "\"isSender\":" + isSender + "," +
+                "\"chatMessageType\":\"" + chatMessageType + "\"," +
+                "\"reactions\":" + reactions + "," +
+                "\"isReply\":" + isReply + "," +
+                "\"replyingMessage\":\"" + replyingMessage + "\"" +
                 '}';
     }
 }

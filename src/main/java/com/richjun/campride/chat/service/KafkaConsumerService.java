@@ -22,6 +22,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(topics = "chat-topic", groupId = "chat-group")
     public void listen(ChatMessage message) {
+        log.info("received : " + message.toString());
 
         chatService.addMessage(message.getRoomId().toString(), message.toString());
         chatService.sendMessage(message);

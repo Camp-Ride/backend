@@ -59,7 +59,7 @@ services:
 
   redis:
     container_name: campride_redis
-    image: redis
+    image: redis:latest
     ports:
       - "6379:6379"
     restart: always
@@ -73,7 +73,8 @@ services:
     restart: always
     ports:
       - "5540:5540"
-
+    networks:
+      - campride_network
   app:
     container_name: campride-api-server
     build: .
