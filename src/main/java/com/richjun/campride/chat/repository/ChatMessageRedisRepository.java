@@ -30,6 +30,7 @@ public class ChatMessageRedisRepository {
                                                                             int count) {
         StreamOperations<String, String, Map<String, String>> streamOps = redisTemplate.opsForStream();
 
+
         return streamOps.read(
                 StreamReadOptions.empty().count(count),
                 StreamOffset.create("/room/" + roomId, ReadOffset.from(startOffset))

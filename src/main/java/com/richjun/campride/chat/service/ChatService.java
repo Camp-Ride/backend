@@ -53,13 +53,19 @@ public class ChatService {
         List<MapRecord<String, String, Map<String, String>>> records = chatMessageRedisRepository.getMessages(
                 roomId, startOffset, count);
 
+        log.info(String.valueOf(records.get(0).getValue().get("message")));
+
         return records.stream()
                 .map(record -> {
                     try {
+                        log.info(String.valueOf(record.getValue().get("message")));
                         String messageJson = String.valueOf(record.getValue().get("message"));
-                        log.info(messageJson.toString());
+                        log.info("messageJson : " + messageJson.toString());
 
                         ChatMessage chatMessage = objectMapper.readValue(messageJson, ChatMessage.class);
+                        log.info("chatMessage Object : " + chatMessage.toString());
+                        log.info("chatMessageResponse Object : " + objectMapper.writeValueAsString(
+                                ChatMessageResponse.from(chatMessage)));
                         return ChatMessageResponse.from(chatMessage); // 정적 팩토리 메서드 사용
                     } catch (ClassCastException | JsonProcessingException e) {
                         log.error("Error processing message: {}", record.getValue().get("message"), e);

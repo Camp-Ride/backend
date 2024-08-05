@@ -31,6 +31,7 @@ public class ChatMessage implements Serializable {
     private boolean isSender;
 
 
+
     @Override
     public String toString() {
         return "{" +

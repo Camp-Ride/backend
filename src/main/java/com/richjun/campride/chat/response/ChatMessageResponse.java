@@ -5,24 +5,26 @@ import com.richjun.campride.chat.domain.ChatMessageType;
 import com.richjun.campride.chat.domain.ChatReaction;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessageResponse {
     private Long roomId;
     private String userId;
     private String text;
     private String imageUrl;
     private LocalDateTime timestamp;
-    private boolean isSender;
+    private Boolean isSender;
     private ChatMessageType chatMessageType;
     private List<ChatReaction> reactions;
-    private boolean isReply;
+    private Boolean isReply;
     private String replyingMessage;
 
-    // 정적 팩토리 메서드 추가
     public static ChatMessageResponse from(ChatMessage chatMessage) {
         return new ChatMessageResponse(
                 chatMessage.getRoomId(),
