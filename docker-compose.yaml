@@ -63,6 +63,8 @@ services:
     ports:
       - "6379:6379"
     restart: always
+    volumes:
+      - ./redis_data:/data
     networks:
       - campride_network
       - app-tier
@@ -94,6 +96,7 @@ services:
       - app-tier
 
 volumes:
+  redis_data:
   db-data:
   kafka_data:
     driver: local

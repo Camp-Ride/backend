@@ -19,7 +19,6 @@ public class ChatMessageResponse {
     private String text;
     private String imageUrl;
     private LocalDateTime timestamp;
-    private Boolean isSender;
     private ChatMessageType chatMessageType;
     private List<ChatReaction> reactions;
     private Boolean isReply;
@@ -33,7 +32,6 @@ public class ChatMessageResponse {
                 chatMessage.getText(),
                 chatMessage.getImageUrl(),
                 chatMessage.getTimestamp(),
-                chatMessage.isSender(),
                 chatMessage.getChatMessageType(),
                 chatMessage.getReactions(),
                 chatMessage.isReply(),

@@ -27,8 +27,6 @@ public class ChatMessage implements Serializable {
     private ChatMessageType chatMessageType;
     @JsonProperty("isReply")
     private boolean isReply;
-    @JsonProperty("isSender")
-    private boolean isSender;
 
 
 
@@ -40,7 +38,6 @@ public class ChatMessage implements Serializable {
                 "\"text\":\"" + text + "\"," +
                 "\"imageUrl\":\"" + imageUrl + "\"," +
                 "\"timestamp\":\"" + timestamp + "\"," +
-                "\"isSender\":" + isSender + "," +
                 "\"chatMessageType\":\"" + chatMessageType + "\"," +
                 "\"reactions\":" + reactions + "," +
                 "\"isReply\":" + isReply + "," +
