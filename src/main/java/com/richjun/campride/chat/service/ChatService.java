@@ -41,7 +41,7 @@ public class ChatService {
 
 
     public void sendMessage(ChatMessage message) {
-        simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getRoomId(), message);
+        simpMessagingTemplate.convertAndSend("/topic/messages/room/" + message.getRoomId(), message);
     }
 
     public void addMessage(String roomId, String messageContent) {
