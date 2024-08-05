@@ -21,7 +21,7 @@ public class ChatMessageRedisRepository {
 
 
     public RecordId addMessage(String roomId, String messageContent) {
-        return redisTemplate.opsForStream().add("room" + roomId, Map.of("message", messageContent));
+        return redisTemplate.opsForStream().add("/room/" + roomId, Map.of("message", messageContent));
 
     }
 
@@ -32,7 +32,7 @@ public class ChatMessageRedisRepository {
 
         return streamOps.read(
                 StreamReadOptions.empty().count(count),
-                StreamOffset.create("room" + roomId, ReadOffset.from(startOffset))
+                StreamOffset.create("/room/" + roomId, ReadOffset.from(startOffset))
         );
 
     }
