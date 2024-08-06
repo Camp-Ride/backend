@@ -36,7 +36,7 @@ public class ChatController {
 
     @GetMapping("/messages")
     public List<ChatMessageResponse> getMessages(@RequestParam String roomId,
-                                                 @RequestParam(defaultValue = "0") String startOffset,
+                                                 @RequestParam(defaultValue = "0") int startOffset,
                                                  @RequestParam(defaultValue = "10") int count) {
         return chatService.getMessages(roomId, startOffset, count);
     }

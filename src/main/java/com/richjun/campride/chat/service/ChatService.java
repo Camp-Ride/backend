@@ -3,38 +3,25 @@ package com.richjun.campride.chat.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.chat.domain.ChatMessage;
-import com.richjun.campride.chat.domain.ChatMessageType;
 import com.richjun.campride.chat.repository.ChatMessageRedisRepository;
 import com.richjun.campride.chat.response.ChatMessageResponse;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.MapRecord;
-import org.springframework.data.redis.connection.stream.ObjectRecord;
-import org.springframework.data.redis.connection.stream.ReadOffset;
-import org.springframework.data.redis.connection.stream.StreamOffset;
-import org.springframework.data.redis.connection.stream.StreamReadOptions;
-import org.springframework.data.redis.core.StreamOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Transactional
 @Service
 public class ChatService {
 
-    private final StringRedisTemplate redisTemplate;
     private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ObjectMapper objectMapper;
@@ -48,7 +35,7 @@ public class ChatService {
         chatMessageRedisRepository.addMessage(roomId, messageContent);
     }
 
-    public List<ChatMessageResponse> getMessages(String roomId, String startOffset, int count) {
+    public List<ChatMessageResponse> getMessages(String roomId, int startOffset, int count) {
 
         List<MapRecord<String, String, Map<String, String>>> records = chatMessageRedisRepository.getMessages(
                 roomId, startOffset, count);
