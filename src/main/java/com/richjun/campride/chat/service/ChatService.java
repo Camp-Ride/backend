@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.MapRecord;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +32,8 @@ public class ChatService {
         simpMessagingTemplate.convertAndSend("/topic/messages/room/" + message.getRoomId(), message);
     }
 
-    public void addMessage(String roomId, String messageContent) {
-        chatMessageRedisRepository.addMessage(roomId, messageContent);
+    public RecordId addMessage(String roomId, String messageContent) {
+        return chatMessageRedisRepository.addMessage(roomId, messageContent);
     }
 
     public List<ChatMessageResponse> getMessages(String roomId, int startOffset, int count) {

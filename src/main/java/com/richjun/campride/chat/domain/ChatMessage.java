@@ -8,13 +8,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage implements Serializable {
+    private String chatMessageId;
     private Long roomId;
     private String userId;
     private String text;
@@ -32,6 +31,7 @@ public class ChatMessage implements Serializable {
     @Override
     public String toString() {
         return "{" +
+                "\"chatMessageId\":\"" + chatMessageId + "\"," +
                 "\"roomId\":" + roomId + "," +
                 "\"userId\":\"" + userId + "\"," +
                 "\"text\":\"" + text + "\"," +
@@ -44,4 +44,7 @@ public class ChatMessage implements Serializable {
                 '}';
     }
 
+    public void updateChatMessageId(String chatMessageId) {
+        this.chatMessageId = chatMessageId;
+    }
 }

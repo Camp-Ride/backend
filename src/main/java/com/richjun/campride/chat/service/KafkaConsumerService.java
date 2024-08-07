@@ -4,6 +4,7 @@ import com.richjun.campride.chat.domain.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -24,7 +25,8 @@ public class KafkaConsumerService {
     public void listen(ChatMessage message) {
         log.info("received : " + message.toString());
 
-        chatService.addMessage(message.getRoomId().toString(), message.toString());
+        RecordId recordId = chatService.addMessage(message.getRoomId().toString(), message.toString());
+        message.updateChatMessageId(String.valueOf(recordId));
         chatService.sendMessage(message);
 
     }

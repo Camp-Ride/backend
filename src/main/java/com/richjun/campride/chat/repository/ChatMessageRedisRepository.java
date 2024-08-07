@@ -26,8 +26,8 @@ public class ChatMessageRedisRepository {
 
 
     public RecordId addMessage(String roomId, String messageContent) {
-        return redisTemplate.opsForStream().add("/room/" + roomId, Map.of("message", messageContent));
 
+        return redisTemplate.opsForStream().add("/room/" + roomId, Map.of("message", messageContent));
     }
 
 
@@ -51,7 +51,7 @@ public class ChatMessageRedisRepository {
 
         if (records != null && records.size() > 0) {
             log.info("records: {}", records);
-            return records.get(records.size()-1).getId().getValue();  // Ensuring we don't go out of range
+            return records.get(records.size() - 1).getId().getValue();  // Ensuring we don't go out of range
         } else {
             log.info("$");
             return "$";  // If the offset is out of range, use the latest ID
