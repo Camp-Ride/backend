@@ -29,7 +29,6 @@ public class ChatMessage implements Serializable {
     private boolean isReply;
 
 
-
     @Override
     public String toString() {
         return "{" +
@@ -44,4 +43,5 @@ public class ChatMessage implements Serializable {
                 "\"replyingMessage\":\"" + replyingMessage + "\"" +
                 '}';
     }
+
 }

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessageResponse {
+    private String chatMessageId;
     private Long roomId;
     private String userId;
     private String text;
@@ -24,8 +25,9 @@ public class ChatMessageResponse {
     private Boolean isReply;
     private String replyingMessage;
 
-    public static ChatMessageResponse from(ChatMessage chatMessage) {
+    public static ChatMessageResponse from(String chatMessageId, ChatMessage chatMessage) {
         return new ChatMessageResponse(
+                chatMessageId,
                 chatMessage.getRoomId(),
                 chatMessage
                         .getUserId(),
@@ -39,10 +41,5 @@ public class ChatMessageResponse {
         );
     }
 
-    // 리스트 변환을 위한 정적 팩토리 메서드 추가
-    public static List<ChatMessageResponse> from(List<ChatMessage> chatMessages) {
-        return chatMessages.stream()
-                .map(ChatMessageResponse::from).toList();
 
-    }
 }

@@ -45,7 +45,8 @@ public class ChatService {
                     try {
                         String messageJson = String.valueOf(record.getValue().get("message"));
                         ChatMessage chatMessage = objectMapper.readValue(messageJson, ChatMessage.class);
-                        return ChatMessageResponse.from(chatMessage); // 정적 팩토리 메서드 사용
+
+                        return ChatMessageResponse.from(String.valueOf(record.getId()), chatMessage); // 정적 팩토리 메서드 사용
                     } catch (ClassCastException | JsonProcessingException e) {
                         log.error("Error processing message: {}", record.getValue().get("message"), e);
                         return null;
