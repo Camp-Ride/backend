@@ -16,4 +16,8 @@ public class KafkaProducerService {
     public void sendMessage(ChatMessage chatMessage) {
         kafkaTemplate.send("chat-topic", chatMessage);
     }
+
+    public void sendReaction(ChatMessage chatMessage) {
+        kafkaTemplate.send("reaction-topic", chatMessage);
+    }
 }

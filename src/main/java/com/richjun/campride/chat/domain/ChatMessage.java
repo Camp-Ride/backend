@@ -1,6 +1,7 @@
 package com.richjun.campride.chat.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,12 +9,19 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
+@RedisHash("chatMessage")
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage implements Serializable {
-    private String chatMessageId;
+
+    @Id
+    private Long id;
+
+    @Indexed
     private Long roomId;
     private String userId;
     private String text;
@@ -31,7 +39,7 @@ public class ChatMessage implements Serializable {
     @Override
     public String toString() {
         return "{" +
-                "\"chatMessageId\":\"" + chatMessageId + "\"," +
+                "\"id\":\"" + id + "\"," +
                 "\"roomId\":" + roomId + "," +
                 "\"userId\":\"" + userId + "\"," +
                 "\"text\":\"" + text + "\"," +
@@ -44,7 +52,7 @@ public class ChatMessage implements Serializable {
                 '}';
     }
 
-    public void updateChatMessageId(String chatMessageId) {
-        this.chatMessageId = chatMessageId;
+    public void updateChatMessageId(Long chatMessageId) {
+        this.id = chatMessageId;
     }
 }

@@ -7,13 +7,11 @@ import com.richjun.campride.chat.service.KafkaProducerService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,14 +32,21 @@ public class ChatController {
         kafkaProducerService.sendMessage(chatMessage);
     }
 
-    @GetMapping("/messages")
-    public List<ChatMessageResponse> getMessages(@RequestParam String roomId,
-                                                 @RequestParam(defaultValue = "0") int startOffset,
-                                                 @RequestParam(defaultValue = "10") int count) {
-        return chatService.getMessages(roomId, startOffset, count);
+    @MessageMapping("/send/reaction")
+    public void sendReaction(@Payload ChatMessage chatMessage) {
+        log.info(chatMessage.toString());
+        kafkaProducerService.sendReaction(chatMessage);
     }
 
+    @GetMapping("/messages")
+    public Page<ChatMessageResponse> getMessages(@RequestParam Long roomId, Pageable pageable) {
+        return chatService.getMessages(roomId, pageable);
+    }
 
+    @GetMapping("/messages/latest")
+    public List<ChatMessageResponse> getLatest10Messages(@RequestParam Long roomId) {
+        return chatService.getMessages2(roomId);
+    }
 
 
 }

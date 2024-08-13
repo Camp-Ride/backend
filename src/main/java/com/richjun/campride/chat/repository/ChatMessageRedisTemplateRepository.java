@@ -1,33 +1,48 @@
 package com.richjun.campride.chat.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.richjun.campride.chat.domain.ChatMessage;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Jedis;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Range;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.redis.connection.Limit;
 import org.springframework.data.redis.connection.stream.MapRecord;
-import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.RecordId;
-import org.springframework.data.redis.connection.stream.StreamOffset;
-import org.springframework.data.redis.connection.stream.StreamReadOptions;
 import org.springframework.data.redis.core.StreamOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
 @AllArgsConstructor
-public class ChatMessageRedisRepository {
+public class ChatMessageRedisTemplateRepository {
 
 
     private final StringRedisTemplate redisTemplate;
+    private final ObjectMapper objectMapper;
 
 
     public RecordId addMessage(String roomId, String messageContent) {
 
         return redisTemplate.opsForStream().add("/room/" + roomId, Map.of("message", messageContent));
+    }
+
+    public void addMessage2(ChatMessage chatMessage) {
+
+        Long messageId = redisTemplate.opsForValue().increment("chat:message:id");
+        chatMessage.updateChatMessageId(messageId);
+
+        redisTemplate.opsForZSet().add("/room/" + chatMessage.getRoomId(), chatMessage.toString(), messageId);
     }
 
 
@@ -44,6 +59,18 @@ public class ChatMessageRedisRepository {
         return streamOps.range("/room/" + roomId, Range.closed(startId, "+"), Limit.limit().count(count));
     }
 
+
+    public List<ChatMessage> getMessages2(Long roomId, int startOffset,
+                                          int count) {
+
+        log.info(redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).toString());
+
+        return redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).stream()
+                .map(this::deserializeChatMessage)
+                .collect(Collectors.toList());
+    }
+
+
     private String getStreamIdAtOffset(String roomId, int offset) {
         StreamOperations<String, String, Map<String, String>> streamOps = redisTemplate.opsForStream();
         List<MapRecord<String, String, Map<String, String>>> records = streamOps.reverseRange(
@@ -59,4 +86,12 @@ public class ChatMessageRedisRepository {
     }
 
 
+
+    private ChatMessage deserializeChatMessage(String messageJson) {
+        try {
+            return objectMapper.readValue(messageJson, ChatMessage.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to deserialize ChatMessage", e);
+        }
+    }
 }

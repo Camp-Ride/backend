@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessageResponse {
-    private String chatMessageId;
+    private Long id;
     private Long roomId;
     private String userId;
     private String text;
@@ -25,9 +25,9 @@ public class ChatMessageResponse {
     private Boolean isReply;
     private String replyingMessage;
 
-    public static ChatMessageResponse from(String chatMessageId, ChatMessage chatMessage) {
+    public static ChatMessageResponse from(Long id, ChatMessage chatMessage) {
         return new ChatMessageResponse(
-                chatMessageId,
+                id,
                 chatMessage.getRoomId(),
                 chatMessage
                         .getUserId(),
