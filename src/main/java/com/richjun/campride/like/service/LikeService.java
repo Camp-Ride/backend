@@ -8,7 +8,7 @@ import static com.richjun.campride.like.domain.type.ContentType.COMMENT;
 import static com.richjun.campride.like.domain.type.ContentType.POST;
 
 import com.richjun.campride.comment.domain.Comment;
-import com.richjun.campride.comment.repository.CommentRepository;
+import com.richjun.campride.comment.domain.repository.CommentRepository;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.like.domain.Like;

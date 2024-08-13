@@ -3,11 +3,10 @@ package com.richjun.campride.comment.service;
 import static com.richjun.campride.global.exception.ExceptionCode.*;
 
 import com.richjun.campride.comment.domain.Comment;
-import com.richjun.campride.comment.repository.CommentRepository;
+import com.richjun.campride.comment.domain.repository.CommentRepository;
 import com.richjun.campride.comment.request.CommentRequest;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
-import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.post.domain.Post;
 import com.richjun.campride.post.domain.repository.PostRepository;
 import com.richjun.campride.user.domain.User;

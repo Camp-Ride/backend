@@ -6,7 +6,7 @@ import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_POST
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
 
 import com.richjun.campride.comment.domain.Comment;
-import com.richjun.campride.comment.repository.CommentRepository;
+import com.richjun.campride.comment.domain.repository.CommentRepository;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.post.domain.Post;
