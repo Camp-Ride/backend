@@ -1,4 +1,4 @@
-package com.richjun.campride.chat.repository;
+package com.richjun.campride.chat.domain.repository;
 
 import com.richjun.campride.chat.domain.ChatMessage;
 import java.util.List;
