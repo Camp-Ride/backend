@@ -24,7 +24,6 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
 
-    @Transactional(readOnly = true)
     @Override
     public Page<RoomResponse> searchRoomsPage(Pageable pageable) {
 
@@ -44,7 +43,6 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
         return new PageImpl<>(roomResponses, pageable, total);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Page<RoomResponse> searchRoomsByDepartureAndDestinationPage(Pageable pageable, String departure,
                                                                        String destination) {
