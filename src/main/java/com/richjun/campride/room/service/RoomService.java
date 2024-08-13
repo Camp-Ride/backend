@@ -33,6 +33,7 @@ public class RoomService {
     private final UserRepository userRepository;
     private final GeocodingService geocodingService;
 
+    @Transactional
     public Long create(final RoomRequest roomRequest, final CustomOAuth2User oAuth2User) {
 
         Location departureLocation = geocodingService.getAddressCoordinates(roomRequest.getDeparture());
@@ -49,6 +50,7 @@ public class RoomService {
                 .getId();
     }
 
+    @Transactional(readOnly = true)
     public RoomResponse getRoom(final Long id) {
 
         final Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
@@ -56,6 +58,7 @@ public class RoomService {
         return RoomResponse.from(room);
     }
 
+    @Transactional
     public Long updateRoom(final Long id, final RoomRequest roomRequest) {
 
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
@@ -76,11 +79,13 @@ public class RoomService {
         return room.getId();
     }
 
+    @Transactional(readOnly = true)
     public Page<RoomResponse> searchRoomsPage(Pageable pageable) {
 
         return roomRepository.searchRoomsPage(pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<RoomResponse> searchRoomsByDepartureAndDestinationPage(Pageable pageable, String departure,
                                                                        String destination) {
 

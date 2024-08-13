@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long>, RoomRepositoryCustom {
-    @Transactional(readOnly = true)
     Boolean existsByIdAndLeaderNickname(Long roomId, String name);
 
 }
