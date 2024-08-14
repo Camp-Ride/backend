@@ -35,10 +35,9 @@ public class ChatService {
     }
 
 
-
     public void addMessage(ChatMessage message) {
         log.info(message.toString());
-        chatMessageRedisRepository.addMessage2(message);
+        chatMessageRedisRepository.addMessage(message);
     }
 
 

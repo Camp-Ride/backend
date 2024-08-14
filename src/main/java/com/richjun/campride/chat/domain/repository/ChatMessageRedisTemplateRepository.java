@@ -32,12 +32,7 @@ public class ChatMessageRedisTemplateRepository {
     private final ObjectMapper objectMapper;
 
 
-    public RecordId addMessage(String roomId, String messageContent) {
-
-        return redisTemplate.opsForStream().add("/room/" + roomId, Map.of("message", messageContent));
-    }
-
-    public void addMessage2(ChatMessage chatMessage) {
+    public void addMessage(ChatMessage chatMessage) {
 
         Long messageId = redisTemplate.opsForValue().increment("chat:message:id");
         chatMessage.updateChatMessageId(messageId);
@@ -46,9 +41,8 @@ public class ChatMessageRedisTemplateRepository {
     }
 
 
-
     public List<ChatMessage> getMessages(Long roomId, int startOffset,
-                                          int count) {
+                                         int count) {
 
         log.info(redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).toString());
 
@@ -71,7 +65,6 @@ public class ChatMessageRedisTemplateRepository {
             return "$";  // If the offset is out of range, use the latest ID
         }
     }
-
 
 
     private ChatMessage deserializeChatMessage(String messageJson) {
