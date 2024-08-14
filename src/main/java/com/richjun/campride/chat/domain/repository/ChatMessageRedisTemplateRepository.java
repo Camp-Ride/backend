@@ -52,18 +52,13 @@ public class ChatMessageRedisTemplateRepository {
     }
 
 
-    private String getStreamIdAtOffset(String roomId, int offset) {
-        StreamOperations<String, String, Map<String, String>> streamOps = redisTemplate.opsForStream();
-        List<MapRecord<String, String, Map<String, String>>> records = streamOps.reverseRange(
-                "/room/" + roomId, Range.open("-", "+"), Limit.limit().count(offset + 1));
+    public void deleteMessage(ChatMessage message) {
+        redisTemplate.opsForZSet().removeRangeByScore("/room/" + message.getRoomId(), message.getId(), message.getId());
 
-        if (records != null && records.size() > 0) {
-            log.info("records: {}", records);
-            return records.get(records.size() - 1).getId().getValue();  // Ensuring we don't go out of range
-        } else {
-            log.info("$");
-            return "$";  // If the offset is out of range, use the latest ID
-        }
+    }
+
+    public void updateReaction(ChatMessage message) {
+        redisTemplate.opsForZSet().add("/room/" + message.getRoomId(), message.toString(), message.getId());
     }
 
 

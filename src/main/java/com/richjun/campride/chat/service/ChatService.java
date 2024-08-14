@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ChatService {
 
-    private final ChatMessageRedisTemplateRepository chatMessageRedisRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final ObjectMapper objectMapper;
     private final ChatMessageRedisTemplateRepository chatMessageRedisTemplateRepository;
 
 
@@ -37,7 +34,7 @@ public class ChatService {
 
     public void addMessage(ChatMessage message) {
         log.info(message.toString());
-        chatMessageRedisRepository.addMessage(message);
+        chatMessageRedisTemplateRepository.addMessage(message);
     }
 
 
@@ -75,8 +72,13 @@ public class ChatService {
 
 
     public void addReaction(ChatMessage message) {
+        //레디스레포지토리로 해당 메세지 삭제
+        chatMessageRedisTemplateRepository.deleteMessage(message);
+        //레디스레포지토리로 해당 메세지 해당 아이디와 점수로 새롭게 추가
+        chatMessageRedisTemplateRepository.updateReaction(message);
     }
 
     public void sendReaction(ChatMessage message) {
+        simpMessagingTemplate.convertAndSend("/topic/messages/room/" + message.getRoomId(), message);
     }
 }

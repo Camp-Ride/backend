@@ -19,8 +19,8 @@ public class ChatReaction {
     @Override
     public String toString() {
         return "{" +
-                "userId='" + userId + '\'' +
-                ", reactionType=\"" + chatReactionType +
-                "\"}";
+                "\"userId\":\"" + userId + "\"," +
+                "\"reactionType\":\"" + chatReactionType + "\"" +
+                "}";
     }
 }
