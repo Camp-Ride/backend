@@ -46,21 +46,8 @@ public class ChatMessageRedisTemplateRepository {
     }
 
 
-    public List<MapRecord<String, String, Map<String, String>>> getMessages(String roomId, int startOffset,
-                                                                            int count) {
-        StreamOperations<String, String, Map<String, String>> streamOps = redisTemplate.opsForStream();
 
-        String startId = getStreamIdAtOffset(roomId, startOffset * 10);
-
-        log.info("startId: {}", startId);
-        log.info("endId: {}", "-");
-        log.info(String.valueOf(startOffset * 10));
-
-        return streamOps.range("/room/" + roomId, Range.closed(startId, "+"), Limit.limit().count(count));
-    }
-
-
-    public List<ChatMessage> getMessages2(Long roomId, int startOffset,
+    public List<ChatMessage> getMessages(Long roomId, int startOffset,
                                           int count) {
 
         log.info(redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).toString());

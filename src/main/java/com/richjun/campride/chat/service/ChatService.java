@@ -46,26 +46,9 @@ public class ChatService {
     }
 
 
-    public Page<ChatMessageResponse> getMessages(Long roomId, Pageable pageable) {
+    public List<ChatMessageResponse> getMessages(Long roomId, int startOffset, int count) {
 
-        List<ChatMessage> chatMessages = chatMessageRepository.findByRoomId(roomId, pageable).stream()
-                .collect(Collectors.toList());
-
-        List<ChatMessageResponse> chatMessageResponses = chatMessages.stream()
-                .map(chatMessage -> ChatMessageResponse.from(chatMessage.getId(), chatMessage))
-                .collect(Collectors.toList());
-
-        log.info(chatMessages.toString());
-        log.info(chatMessageResponses.toString());
-
-        return new PageImpl<>(chatMessageResponses, pageable,
-                chatMessages.size());
-
-    }
-
-    public List<ChatMessageResponse> getMessages2(Long roomId) {
-
-        List<ChatMessage> chatMessages = chatMessageRedisTemplateRepository.getMessages2(roomId, 0, 10);
+        List<ChatMessage> chatMessages = chatMessageRedisTemplateRepository.getMessages(roomId, startOffset, count);
 
         List<ChatMessageResponse> chatMessageResponses = chatMessages.stream()
                 .map(chatMessage -> ChatMessageResponse.from(chatMessage.getId(), chatMessage))
@@ -80,49 +63,20 @@ public class ChatService {
     }
 
     public List<ChatMessageResponse> getLatest10Messages(Long roomId) {
-//        List<ChatMessage> chatMessages = chatMessageRepository.findTopByRoomIdOrderByTimestampDesc(roomId);
-//        log.info(chatMessages.toString());
-//
-//        long count = chatMessageRepository.countChatMessageByRoomIdContaining(roomId);
-//
-//        Pageable page = PageRequest.of(0, 1, Direction.DESC, "timestamp");
-//
-//        log.info(String.valueOf(count));
-//
-//        Page<ChatMessage> chatMessages = chatMessageRepository.findByRoomId(roomId, page);
-//
-//        log.info(chatMessages.toString());
 
-        return null;
+        List<ChatMessage> chatMessages = chatMessageRedisTemplateRepository.getMessages(roomId, 0, 10);
+
+        List<ChatMessageResponse> chatMessageResponses = chatMessages.stream()
+                .map(chatMessage -> ChatMessageResponse.from(chatMessage.getId(), chatMessage))
+                .sorted(Comparator.comparing(ChatMessageResponse::getId))
+                .collect(Collectors.toList());
+
+        log.info(chatMessages.toString());
+        log.info(chatMessageResponses.toString());
+
+        return chatMessageResponses;
 
     }
-
-
-    public ChatMessage findById(String id) {
-        return chatMessageRepository.findById(id).orElse(null);
-    }
-
-//    public List<ChatMessageResponse> getMessages(String roomId, int startOffset, int count) {
-//
-//        List<MapRecord<String, String, Map<String, String>>> records = chatMessageRedisRepository.getMessages(
-//                roomId, startOffset, count);
-//
-//        return records.stream()
-//                .map(record -> {
-//                    try {
-//                        String messageJson = String.valueOf(record.getValue().get("message"));
-//                        ChatMessage chatMessage = objectMapper.readValue(messageJson, ChatMessage.class);
-//
-//                        return ChatMessageResponse.from(String.valueOf(record.getId()), chatMessage); // 정적 팩토리 메서드 사용
-//                    } catch (ClassCastException | JsonProcessingException e) {
-//                        log.error("Error processing message: {}", record.getValue().get("message"), e);
-//                        return null;
-//                    }
-//                })
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.toList());
-//
-//    }
 
 
 }

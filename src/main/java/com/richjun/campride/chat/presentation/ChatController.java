@@ -39,13 +39,14 @@ public class ChatController {
     }
 
     @GetMapping("/messages")
-    public Page<ChatMessageResponse> getMessages(@RequestParam Long roomId, Pageable pageable) {
-        return chatService.getMessages(roomId, pageable);
+    public List<ChatMessageResponse> getMessages(@RequestParam Long roomId, @RequestParam int startOffset,
+                                                 @RequestParam int count) {
+        return chatService.getMessages(roomId, startOffset, count);
     }
 
     @GetMapping("/messages/latest")
     public List<ChatMessageResponse> getLatest10Messages(@RequestParam Long roomId) {
-        return chatService.getMessages2(roomId);
+        return chatService.getLatest10Messages(roomId);
     }
 
 
