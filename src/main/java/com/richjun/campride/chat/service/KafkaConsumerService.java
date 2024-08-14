@@ -26,7 +26,7 @@ public class KafkaConsumerService {
     @KafkaListener(topics = "chat-topic", groupId = "chat-group")
     public void listenChatTopic(ChatMessage message) {
         log.info("received : " + message.toString());
-        chatService.addMessage2(message);
+        chatService.addMessage(message);
         chatService.sendMessage(message);
 
     }
@@ -35,8 +35,8 @@ public class KafkaConsumerService {
     @KafkaListener(topics = "reaction-topic", groupId = "chat-group")
     public void listenReactionTopic(ChatMessage message) {
         log.info("received : " + message.toString());
-//        chatService.addReaction(message);
-//        chatService.sendReaction(message);
+        chatService.addReaction(message);
+        chatService.sendReaction(message);
 
     }
 

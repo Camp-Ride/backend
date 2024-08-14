@@ -35,12 +35,8 @@ public class ChatService {
     }
 
 
-    public ChatMessage addMessage(ChatMessage message) {
-        log.info(message.toString());
-        return chatMessageRepository.save(message);
-    }
 
-    public void addMessage2(ChatMessage message) {
+    public void addMessage(ChatMessage message) {
         log.info(message.toString());
         chatMessageRedisRepository.addMessage2(message);
     }
@@ -79,4 +75,9 @@ public class ChatService {
     }
 
 
+    public void addReaction(ChatMessage message) {
+    }
+
+    public void sendReaction(ChatMessage message) {
+    }
 }
