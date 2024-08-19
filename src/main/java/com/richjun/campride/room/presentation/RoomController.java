@@ -68,5 +68,12 @@ public class RoomController {
         return ResponseEntity.ok().body(roomService.joinRoom(id, oAuth2User));
     }
 
+    @PutMapping("/room/{id}/exit")
+    public ResponseEntity<RoomResponse> exitRoom(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
+                                                 @PathVariable Long id) {
+
+        return ResponseEntity.ok().body(roomService.exitRoom(id, oAuth2User));
+    }
+
 
 }

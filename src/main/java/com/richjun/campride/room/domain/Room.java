@@ -132,4 +132,13 @@ public class Room extends BaseEntity {
     public boolean isAleadyParticipant(String name) {
         return participants.stream().anyMatch(user -> user.getSocialLoginId().equals(name));
     }
+
+    public boolean isNotParticipant(String name) {
+        return participants.stream().noneMatch(user -> user.getSocialLoginId().equals(name));
+    }
+
+    public Room removeParticipant(User user) {
+        participants.remove(user);
+        return this;
+    }
 }

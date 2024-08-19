@@ -106,4 +106,19 @@ public class RoomService {
 
         return RoomResponse.from(room.addParticipant(user));
     }
+
+    @Transactional
+    public RoomResponse exitRoom(Long id, CustomOAuth2User oAuth2User) {
+
+        Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+
+        if (room.isNotParticipant(oAuth2User.getName())) {
+            throw new BadRequestException(NOT_FOUND_USER_ID);
+        }
+
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        return RoomResponse.from(room.removeParticipant(user));
+    }
 }
