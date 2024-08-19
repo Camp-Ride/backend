@@ -1,25 +1,16 @@
 package com.richjun.campride.chat.domain.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.chat.domain.ChatMessage;
+import com.richjun.campride.global.exception.BadRequestException;
+import com.richjun.campride.global.exception.ExceptionCode;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Range;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.redis.connection.Limit;
-import org.springframework.data.redis.connection.stream.MapRecord;
-import org.springframework.data.redis.connection.stream.RecordId;
-import org.springframework.data.redis.core.StreamOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -68,5 +59,34 @@ public class ChatMessageRedisTemplateRepository {
         } catch (Exception e) {
             throw new RuntimeException("Failed to deserialize ChatMessage", e);
         }
+    }
+
+    public String getLatestMessageContent(Long id) {
+
+        String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst()
+                .orElseThrow(() -> new BadRequestException(
+                        ExceptionCode.NOT_FOUND_ROOM_ID));
+
+        try {
+            JsonNode jsonNode = objectMapper.readTree(value);
+            String text = jsonNode.path("text").asText();
+            return text;
+        } catch (JsonProcessingException e) {
+            throw new BadRequestException(ExceptionCode.FAIL_JSON_PARSING);
+        }
+
+    }
+
+    public Long getUnreadMessageCount(Long id, Long lastSeenMessageScore) {
+
+        if (lastSeenMessageScore == null) {
+            return redisTemplate.opsForZSet().size("/room/" + id);
+        }
+
+        Long count = redisTemplate.opsForZSet()
+                .count("/room/" + id, lastSeenMessageScore, Long.MAX_VALUE);
+
+        return count;
+
     }
 }

@@ -92,6 +92,8 @@ public class Room extends BaseEntity {
     )
     private List<User> participants;
 
+    private Long lastSeenMessageScore;
+
 
     public static Room of(final RoomRequest roomRequest, List<User> participants, String leaderNickname,
                           Location departureLocation,
@@ -107,7 +109,8 @@ public class Room extends BaseEntity {
                 roomRequest.getDepartureTime(),
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
-                participants
+                participants,
+                null
         );
     }
 

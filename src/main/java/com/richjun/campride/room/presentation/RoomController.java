@@ -1,10 +1,12 @@
 package com.richjun.campride.room.presentation;
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
+import com.richjun.campride.room.response.RoomJoinedResponse;
 import com.richjun.campride.room.response.RoomResponse;
 import com.richjun.campride.room.request.RoomRequest;
 import com.richjun.campride.room.service.RoomService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +53,12 @@ public class RoomController {
     @GetMapping("/room")
     public ResponseEntity<Page<RoomResponse>> searchRoomsPage(Pageable pageable) {
         return ResponseEntity.ok().body(roomService.searchRoomsPage(pageable));
+    }
+
+
+    @GetMapping("/room/joined")
+    public ResponseEntity<List<RoomJoinedResponse>> getJoinedRooms(@AuthenticationPrincipal CustomOAuth2User oAuth2User) {
+        return ResponseEntity.ok().body(roomService.getJoinedRooms(oAuth2User));
     }
 
     @GetMapping("/room/address")

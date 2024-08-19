@@ -4,6 +4,7 @@ import static com.richjun.campride.global.exception.ExceptionCode.ALREADY_EXIST_
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_ROOM_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
 
+import com.richjun.campride.chat.domain.repository.ChatMessageRedisTemplateRepository;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.location.domain.Location;
@@ -11,11 +12,13 @@ import com.richjun.campride.global.location.service.GeocodingService;
 import com.richjun.campride.room.domain.Room;
 import com.richjun.campride.room.domain.repository.RoomRepository;
 import com.richjun.campride.room.request.RoomRequest;
+import com.richjun.campride.room.response.RoomJoinedResponse;
 import com.richjun.campride.room.response.RoomResponse;
 import com.richjun.campride.user.domain.User;
 import com.richjun.campride.user.domain.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +35,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final GeocodingService geocodingService;
+    private final ChatMessageRedisTemplateRepository chatMessageRedisTemplateRepository;
 
     @Transactional
     public Long create(final RoomRequest roomRequest, final CustomOAuth2User oAuth2User) {
@@ -120,5 +124,21 @@ public class RoomService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
         return RoomResponse.from(room.removeParticipant(user));
+    }
+
+    public List<RoomJoinedResponse> getJoinedRooms(CustomOAuth2User oAuth2User) {
+
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        List<Room> rooms = user.getRooms();
+
+        return rooms.stream().map(room -> {
+            return
+                    RoomJoinedResponse.from(room,
+                            chatMessageRedisTemplateRepository.getLatestMessageContent(room.getId()),
+                            chatMessageRedisTemplateRepository.getUnreadMessageCount(room.getId(),
+                                    room.getLastSeenMessageScore()));
+        }).collect(Collectors.toList());
+
     }
 }
