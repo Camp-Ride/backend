@@ -8,8 +8,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,6 +59,13 @@ public class RoomController {
                                                                                        @RequestParam(required = false) String destination) {
         return ResponseEntity.ok()
                 .body(roomService.searchRoomsByDepartureAndDestinationPage(pageable, departure, destination));
+    }
+
+    @PutMapping("/room/{id}/join")
+    public ResponseEntity<RoomResponse> joinRoom(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
+                                                 @PathVariable Long id) {
+
+        return ResponseEntity.ok().body(roomService.joinRoom(id, oAuth2User));
     }
 
 

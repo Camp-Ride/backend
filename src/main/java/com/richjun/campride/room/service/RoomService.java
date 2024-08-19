@@ -1,5 +1,6 @@
 package com.richjun.campride.room.service;
 
+import static com.richjun.campride.global.exception.ExceptionCode.ALREADY_EXIST_USER;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_ROOM_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
 
@@ -18,7 +19,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,5 +90,20 @@ public class RoomService {
                                                                        String destination) {
 
         return roomRepository.searchRoomsByDepartureAndDestinationPage(pageable, departure, destination);
+    }
+
+    @Transactional
+    public RoomResponse joinRoom(Long id, CustomOAuth2User oAuth2User) {
+
+        Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+
+        if (room.isAleadyParticipant(oAuth2User.getName())) {
+            throw new BadRequestException(ALREADY_EXIST_USER);
+        }
+
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        return RoomResponse.from(room.addParticipant(user));
     }
 }

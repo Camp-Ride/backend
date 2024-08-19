@@ -40,7 +40,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Room  extends BaseEntity {
+public class Room extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -50,7 +50,6 @@ public class Room  extends BaseEntity {
     private String title;
 
     private String leaderNickname;
-
 
     @Column(nullable = false)
     private String departure;
@@ -120,5 +119,17 @@ public class Room  extends BaseEntity {
         this.destinationLocation = destinationLocation;
         this.departureTime = roomRequest.getDepartureTime();
         this.roomType = roomRequest.getRoomType();
+    }
+
+    public Room addParticipant(User user) {
+        if (participants == null) {
+            participants = new ArrayList<>();
+        }
+        participants.add(user);
+        return this;
+    }
+
+    public boolean isAleadyParticipant(String name) {
+        return participants.stream().anyMatch(user -> user.getSocialLoginId().equals(name));
     }
 }

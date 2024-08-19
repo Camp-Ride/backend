@@ -20,14 +20,13 @@ public enum ExceptionCode {
     NOT_FOUND_COMMENT_ID(3004, "해당하는 Comment Id를 찾지 못했습니다."),
     NOT_FOUND_LIKE_ID(3005, "해당하는 Like Id를 찾지 못했습니다."),
     NOT_FOUND_CONTENT_TYPE(3005, "해당하는 Content Type을 찾지 못했습니다."),
-
+    ALREADY_EXIST_USER(3006, "이미 존재하는 User입니다."),
 
 
     NOT_ROOM_LEADER(4001, "해당하는 Room의 방장이 아니기 때문에 요청을 실행할 수 없습니다."),
     NOT_POST_AUTHOR(4002, "해당하는 Post의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),
-    NOT_COMMENT_AUTHOR(4003,"해당하는 댓글의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),
-    NOT_LIKE_MASTER(4004,"해당하는 좋아요의 주인이 아니기 때문에 요청을 실행할 수 없습니다."),
-
+    NOT_COMMENT_AUTHOR(4003, "해당하는 댓글의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),
+    NOT_LIKE_MASTER(4004, "해당하는 좋아요의 주인이 아니기 때문에 요청을 실행할 수 없습니다."),
 
 
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
