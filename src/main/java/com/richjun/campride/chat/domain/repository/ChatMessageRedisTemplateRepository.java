@@ -69,7 +69,7 @@ public class ChatMessageRedisTemplateRepository {
         String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst().orElse(null);
 
         if (value == null) {
-            return null;
+            return LatestMessageResponse.of("", "", LocalDateTime.MIN);
         }
 
         try {
