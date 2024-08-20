@@ -1,5 +1,6 @@
 package com.richjun.campride.room.response;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,9 +9,11 @@ import lombok.Getter;
 public class LatestMessageResponse {
     private String sender;
     private String content;
+    private LocalDateTime createdAt;
 
-    public static LatestMessageResponse of(String sender, String content) {
-        return new LatestMessageResponse(sender, content);
+
+    public static LatestMessageResponse of(String sender, String content, LocalDateTime createdAt) {
+        return new LatestMessageResponse(sender, content, createdAt);
     }
 
 }

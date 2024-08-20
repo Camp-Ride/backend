@@ -7,6 +7,8 @@ import com.richjun.campride.chat.domain.ChatMessage;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.room.response.LatestMessageResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -72,8 +74,9 @@ public class ChatMessageRedisTemplateRepository {
             JsonNode jsonNode = objectMapper.readTree(value);
             String sender = jsonNode.path("userId").asText();
             String content = jsonNode.path("text").asText();
+            LocalDateTime timestamp = objectMapper.convertValue(jsonNode.path("timestamp"), LocalDateTime.class);
 
-            return LatestMessageResponse.of(sender, content);
+            return LatestMessageResponse.of(sender, content, timestamp);
         } catch (JsonProcessingException e) {
             throw new BadRequestException(ExceptionCode.FAIL_JSON_PARSING);
         }
