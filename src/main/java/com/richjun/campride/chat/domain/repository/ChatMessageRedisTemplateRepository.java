@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.chat.domain.ChatMessage;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.exception.ExceptionCode;
+import com.richjun.campride.room.response.LatestMessageResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -61,7 +62,7 @@ public class ChatMessageRedisTemplateRepository {
         }
     }
 
-    public String getLatestMessageContent(Long id) {
+    public LatestMessageResponse getLatestMessage(Long id) {
 
         String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst()
                 .orElseThrow(() -> new BadRequestException(
@@ -69,8 +70,10 @@ public class ChatMessageRedisTemplateRepository {
 
         try {
             JsonNode jsonNode = objectMapper.readTree(value);
-            String text = jsonNode.path("text").asText();
-            return text;
+            String sender = jsonNode.path("userId").asText();
+            String content = jsonNode.path("text").asText();
+
+            return LatestMessageResponse.of(sender, content);
         } catch (JsonProcessingException e) {
             throw new BadRequestException(ExceptionCode.FAIL_JSON_PARSING);
         }
@@ -89,4 +92,5 @@ public class ChatMessageRedisTemplateRepository {
         return count;
 
     }
+
 }

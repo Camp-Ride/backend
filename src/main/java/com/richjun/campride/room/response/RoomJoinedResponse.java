@@ -24,11 +24,12 @@ public class RoomJoinedResponse {
     private RoomType roomType;
     private List<ParticipantResponse> participants;
     private LocalDateTime createdAt;
-    private String latestMessageContent;
+    private LatestMessageResponse latestMessageResponse;
     private Long unreadMessageCount;
 
 
-    public static RoomJoinedResponse from(Room room, String latestMessageContent, Long unreadMessageCount) {
+    public static RoomJoinedResponse from(Room room, LatestMessageResponse latestMessageResponse,
+                                          Long unreadMessageCount) {
         return new RoomJoinedResponse(room.getId(),
                 room.getLeaderNickname(),
                 room.getTitle(),
@@ -41,7 +42,7 @@ public class RoomJoinedResponse {
                 room.getRoomType(),
                 ParticipantResponse.from(room.getParticipants()),
                 room.getCreatedAt(),
-                latestMessageContent,
+                latestMessageResponse,
                 unreadMessageCount
         );
 

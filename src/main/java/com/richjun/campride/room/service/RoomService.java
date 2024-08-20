@@ -135,10 +135,10 @@ public class RoomService {
         return rooms.stream().map(room -> {
             return
                     RoomJoinedResponse.from(room,
-                            chatMessageRedisTemplateRepository.getLatestMessageContent(room.getId()),
+                            chatMessageRedisTemplateRepository.getLatestMessage(room.getId()),
                             chatMessageRedisTemplateRepository.getUnreadMessageCount(room.getId(),
                                     room.getLastSeenMessageScore()));
         }).collect(Collectors.toList());
-
     }
+
 }
