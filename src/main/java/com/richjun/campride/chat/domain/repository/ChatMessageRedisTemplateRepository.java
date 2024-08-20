@@ -66,9 +66,11 @@ public class ChatMessageRedisTemplateRepository {
 
     public LatestMessageResponse getLatestMessage(Long id) {
 
-        String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst()
-                .orElseThrow(() -> new BadRequestException(
-                        ExceptionCode.NOT_FOUND_ROOM_ID));
+        String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst().orElse(null);
+
+        if (value == null) {
+            return null;
+        }
 
         try {
             JsonNode jsonNode = objectMapper.readTree(value);
