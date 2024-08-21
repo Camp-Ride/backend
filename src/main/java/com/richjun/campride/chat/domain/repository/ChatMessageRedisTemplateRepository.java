@@ -40,7 +40,7 @@ public class ChatMessageRedisTemplateRepository {
 
         log.info(redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).toString());
 
-        return redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).stream()
+        return redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, (startOffset*10) + count - 1).stream()
                 .map(this::deserializeChatMessage)
                 .collect(Collectors.toList());
     }
