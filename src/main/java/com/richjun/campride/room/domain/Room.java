@@ -84,7 +84,7 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     private RoomType roomType;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants;
 
 
