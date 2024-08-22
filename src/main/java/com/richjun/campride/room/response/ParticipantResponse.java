@@ -1,5 +1,6 @@
 package com.richjun.campride.room.response;
 
+import com.richjun.campride.room.domain.Participant;
 import com.richjun.campride.user.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +19,12 @@ public class ParticipantResponse {
     String role;
 
 
-    public static List<ParticipantResponse> from(List<User> users) {
+    public static List<ParticipantResponse> from(List<Participant> participants) {
 
-        return users.stream()
-                .map((user) -> new ParticipantResponse(user.getId(), user.getSocialLoginId(), user.getNickname(),
-                        user.getRole())).collect(
+        return participants.stream()
+                .map((participant) -> new ParticipantResponse(participant.getUser().getId(),
+                        participant.getUser().getSocialLoginId(), participant.getUser().getNickname(),
+                        participant.getUser().getRole())).collect(
                         Collectors.toList());
     }
 

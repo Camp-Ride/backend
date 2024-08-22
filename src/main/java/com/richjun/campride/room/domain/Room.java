@@ -84,18 +84,11 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     private RoomType roomType;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_room",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> participants;
-
-    private Long lastSeenMessageScore;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<Participant> participants;
 
 
-    public static Room of(final RoomRequest roomRequest, List<User> participants, String leaderNickname,
+    public static Room of(final RoomRequest roomRequest, String leaderNickname,
                           Location departureLocation,
                           Location destinationLocation) {
         return new Room(
@@ -109,9 +102,8 @@ public class Room extends BaseEntity {
                 roomRequest.getDepartureTime(),
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
-                participants,
-                null
-        );
+                new ArrayList<>()
+                );
     }
 
     public void update(RoomRequest roomRequest, Location departureLocation, Location destinationLocation) {
@@ -124,24 +116,25 @@ public class Room extends BaseEntity {
         this.roomType = roomRequest.getRoomType();
     }
 
-    public Room addParticipant(User user) {
+    public Room addParticipant(Participant participant) {
         if (participants == null) {
             participants = new ArrayList<>();
         }
-        participants.add(user);
+        participants.add(participant);
         return this;
     }
 
     public boolean isAleadyParticipant(String name) {
-        return participants.stream().anyMatch(user -> user.getSocialLoginId().equals(name));
+        return participants.stream().anyMatch(participant -> participant.getUser().getSocialLoginId().equals(name));
     }
 
     public boolean isNotParticipant(String name) {
-        return participants.stream().noneMatch(user -> user.getSocialLoginId().equals(name));
+        return participants.stream().noneMatch(participant -> participant.getUser().getSocialLoginId().equals(name));
     }
 
     public Room removeParticipant(User user) {
-        participants.remove(user);
+        participants.removeIf(participant -> participant.getUser().getSocialLoginId().equals(user.getSocialLoginId()));
+
         return this;
     }
 }

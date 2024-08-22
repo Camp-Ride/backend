@@ -9,7 +9,9 @@ import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.location.domain.Location;
 import com.richjun.campride.global.location.service.GeocodingService;
+import com.richjun.campride.room.domain.Participant;
 import com.richjun.campride.room.domain.Room;
+import com.richjun.campride.room.domain.repository.ParticipantRepository;
 import com.richjun.campride.room.domain.repository.RoomRepository;
 import com.richjun.campride.room.request.RoomRequest;
 import com.richjun.campride.room.response.RoomJoinedResponse;
@@ -34,6 +36,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final ParticipantRepository participantRepository;
     private final GeocodingService geocodingService;
     private final ChatMessageRedisTemplateRepository chatMessageRedisTemplateRepository;
 
@@ -46,12 +49,13 @@ public class RoomService {
         User leaderUser = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
-        List<User> participants = new ArrayList<>();
-        participants.add(leaderUser);
+        Room room = Room.of(roomRequest, leaderUser.getNickname(), departureLocation, destinationLocation);
 
-        return roomRepository.save(
-                        Room.of(roomRequest, participants, leaderUser.getNickname(), departureLocation, destinationLocation))
-                .getId();
+        roomRepository.save(room);
+
+        Participant participant = new Participant(leaderUser, room, 0L);
+
+        return participantRepository.save(participant).getId();
     }
 
     @Transactional(readOnly = true)
@@ -108,7 +112,9 @@ public class RoomService {
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
-        return RoomResponse.from(room.addParticipant(user));
+        Participant participant = new Participant(user, room, 0L);
+
+        return RoomResponse.from(room.addParticipant(participant));
     }
 
     @Transactional
@@ -130,14 +136,15 @@ public class RoomService {
 
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
-        List<Room> rooms = user.getRooms();
 
-        return rooms.stream().map(room -> {
-            return
-                    RoomJoinedResponse.from(room,
-                            chatMessageRedisTemplateRepository.getLatestMessage(room.getId()),
-                            chatMessageRedisTemplateRepository.getUnreadMessageCount(room.getId(),
-                                    room.getLastSeenMessageScore()));
+        List<Participant> participants = participantRepository.findByUser(user)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        return participants.stream().map(participant -> {
+            return RoomJoinedResponse.from(participant.getRoom(),
+                    chatMessageRedisTemplateRepository.getLatestMessage(participant.getRoom().getId()),
+                    chatMessageRedisTemplateRepository.getUnreadMessageCount(participant.getRoom().getId(),
+                            participant.getLastSeenMessageScore()));
         }).collect(Collectors.toList());
     }
 

@@ -5,6 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.richjun.campride.global.common.BaseEntity;
+import com.richjun.campride.room.domain.Participant;
 import com.richjun.campride.room.domain.Room;
 import com.richjun.campride.user.request.UserRequest;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +35,8 @@ public class User extends BaseEntity {
     private String nickname;
     private String role;
 
-    @ManyToMany(mappedBy = "participants")
-    private List<Room> rooms;
+    @OneToMany(mappedBy = "user")
+    private List<Participant> participants = new ArrayList<>();
 
 
     public User(String socialLoginId, String nickname, String role) {
