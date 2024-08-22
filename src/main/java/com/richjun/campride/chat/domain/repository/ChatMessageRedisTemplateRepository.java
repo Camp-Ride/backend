@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -40,7 +41,8 @@ public class ChatMessageRedisTemplateRepository {
 
         log.info(redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, count - 1).toString());
 
-        return redisTemplate.opsForZSet().reverseRange("/room/" + roomId, startOffset * 10, (startOffset*10) + count - 1).stream()
+        return redisTemplate.opsForZSet()
+                .reverseRange("/room/" + roomId, startOffset * 10, (startOffset * 10) + count - 1).stream()
                 .map(this::deserializeChatMessage)
                 .collect(Collectors.toList());
     }
@@ -98,4 +100,21 @@ public class ChatMessageRedisTemplateRepository {
 
     }
 
+    public Long getLatestMessageScore(Long id) {
+
+        String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst().orElse(null);
+
+        if (value == null) {
+            return 0L;
+        }
+
+        try {
+            JsonNode jsonNode = objectMapper.readTree(value);
+            Long lastSeenMessageScore = Long.parseLong(jsonNode.path("id").asText());
+            return lastSeenMessageScore;
+        } catch (JsonProcessingException e) {
+            throw new BadRequestException(ExceptionCode.FAIL_JSON_PARSING);
+        }
+
+    }
 }

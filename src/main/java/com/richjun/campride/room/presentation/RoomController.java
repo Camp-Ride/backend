@@ -83,5 +83,17 @@ public class RoomController {
         return ResponseEntity.ok().body(roomService.exitRoom(id, oAuth2User));
     }
 
+    @PutMapping("/room/{id}/last-message")
+    public ResponseEntity<RoomResponse> updateLastMessage(@AuthenticationPrincipal CustomOAuth2User oAuth2User, @PathVariable Long id) {
+        return ResponseEntity.ok().body(roomService.updateLastMessage(id,oAuth2User));
+    }
+
+
+
+
+
+
+
+
 
 }

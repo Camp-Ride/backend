@@ -137,6 +137,7 @@ public class RoomService {
         return RoomResponse.from(room.removeParticipant(user));
     }
 
+    @Transactional(readOnly = true)
     public List<RoomJoinedResponse> getJoinedRooms(CustomOAuth2User oAuth2User) {
 
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
@@ -152,5 +153,20 @@ public class RoomService {
                             participant.getLastSeenMessageScore()));
         }).collect(Collectors.toList());
     }
+
+    @Transactional
+    public RoomResponse updateLastMessage(Long id, CustomOAuth2User oAuth2User) {
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+
+        Participant participant = room.findParticipantByUser(user)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        participant.updateLastSeenMessageScore(chatMessageRedisTemplateRepository.getLatestMessageScore(id));
+
+        return RoomResponse.from(room);
+    }
+
 
 }

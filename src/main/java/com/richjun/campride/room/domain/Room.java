@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -140,5 +141,9 @@ public class Room extends BaseEntity {
 
     public boolean isRoomLeader(User user) {
         return leaderNickname.equals(user.getNickname());
+    }
+
+    public Optional<Participant> findParticipantByUser(User user) {
+        return participants.stream().filter(participant -> participant.getUser().equals(user)).findFirst();
     }
 }

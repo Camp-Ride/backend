@@ -35,4 +35,8 @@ public class Participant {
         this.room = room;
         this.lastSeenMessageScore = lastSeenMessageScore;
     }
+
+    public void updateLastSeenMessageScore(Long lastSeenMessageScore) {
+        this.lastSeenMessageScore = lastSeenMessageScore;
+    }
 }

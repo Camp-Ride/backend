@@ -13,10 +13,11 @@ import lombok.RequiredArgsConstructor;
 public class ParticipantResponse {
 
 
-    Long id;
-    String socialLoginId;
-    String nickname;
-    String role;
+    private Long id;
+    private String socialLoginId;
+    private String nickname;
+    private String role;
+    private Long lastSeenMessageScore;
 
 
     public static List<ParticipantResponse> from(List<Participant> participants) {
@@ -24,7 +25,7 @@ public class ParticipantResponse {
         return participants.stream()
                 .map((participant) -> new ParticipantResponse(participant.getUser().getId(),
                         participant.getUser().getSocialLoginId(), participant.getUser().getNickname(),
-                        participant.getUser().getRole())).collect(
+                        participant.getUser().getRole(), participant.getLastSeenMessageScore())).collect(
                         Collectors.toList());
     }
 
