@@ -129,6 +129,11 @@ public class RoomService {
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
+        if (room.isRoomLeader(user)) {
+            roomRepository.deleteById(id);
+            return RoomResponse.from(room);
+        }
+
         return RoomResponse.from(room.removeParticipant(user));
     }
 

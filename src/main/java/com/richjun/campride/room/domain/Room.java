@@ -103,7 +103,7 @@ public class Room extends BaseEntity {
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
                 new ArrayList<>()
-                );
+        );
     }
 
     public void update(RoomRequest roomRequest, Location departureLocation, Location destinationLocation) {
@@ -136,5 +136,9 @@ public class Room extends BaseEntity {
         participants.removeIf(participant -> participant.getUser().getSocialLoginId().equals(user.getSocialLoginId()));
 
         return this;
+    }
+
+    public boolean isRoomLeader(User user) {
+        return leaderNickname.equals(user.getNickname());
     }
 }
