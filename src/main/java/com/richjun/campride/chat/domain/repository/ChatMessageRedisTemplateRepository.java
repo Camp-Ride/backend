@@ -94,7 +94,7 @@ public class ChatMessageRedisTemplateRepository {
         }
 
         Long count = redisTemplate.opsForZSet()
-                .count("/room/" + id, lastSeenMessageScore, Long.MAX_VALUE);
+                .count("/room/" + id, lastSeenMessageScore + 1, Long.MAX_VALUE);
 
         return count;
 
