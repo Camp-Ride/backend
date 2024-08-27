@@ -151,4 +151,8 @@ public class Room extends BaseEntity {
     public Optional<Participant> findParticipantByUser(User user) {
         return participants.stream().filter(participant -> participant.getUser().equals(user)).findFirst();
     }
+
+    public boolean isExceedMaxParticipants() {
+        return participants.size() >= maxParticipants;
+    }
 }
