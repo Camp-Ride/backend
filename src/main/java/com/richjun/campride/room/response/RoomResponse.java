@@ -34,6 +34,7 @@ public class RoomResponse {
     private String destination;
     private Location destinationLocation;
     private LocalDateTime departureTime;
+    private int trainingDays;
     private int maxParticipants;
     private RoomType roomType;
     private List<ParticipantResponse> participants;
@@ -49,6 +50,7 @@ public class RoomResponse {
                 room.getDestination(),
                 room.getDestinationLocation(),
                 room.getDepartureTime(),
+                room.getTrainingDays(),
                 room.getMaxParticipants(),
                 room.getRoomType(),
                 ParticipantResponse.from(room.getParticipants()),

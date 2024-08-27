@@ -79,7 +79,11 @@ public class Room extends BaseEntity {
     private LocalDateTime departureTime;
 
     @Column(nullable = false)
+    private int trainingDays;
+
+    @Column(nullable = false)
     private int maxParticipants;
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -101,6 +105,7 @@ public class Room extends BaseEntity {
                 roomRequest.getDestination(),
                 destinationLocation,
                 roomRequest.getDepartureTime(),
+                roomRequest.getTrainingDays(),
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
                 new ArrayList<>()
