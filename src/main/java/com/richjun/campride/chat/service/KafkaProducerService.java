@@ -20,4 +20,8 @@ public class KafkaProducerService {
     public void sendReaction(ChatMessage chatMessage) {
         kafkaTemplate.send("reaction-topic", chatMessage);
     }
+
+    public void sendLeave(ChatMessage chatMessage) {
+        kafkaTemplate.send("leave-topic", chatMessage);
+    }
 }

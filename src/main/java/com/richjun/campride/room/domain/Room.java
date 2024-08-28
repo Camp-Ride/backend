@@ -138,6 +138,11 @@ public class Room extends BaseEntity {
         return participants.stream().noneMatch(participant -> participant.getUser().getSocialLoginId().equals(name));
     }
 
+
+    public boolean isNotParticipantByUserId(Long userId) {
+        return participants.stream().noneMatch(participant -> participant.getUser().getId().equals(userId));
+    }
+
     public Room removeParticipant(User user) {
         participants.removeIf(participant -> participant.getUser().getSocialLoginId().equals(user.getSocialLoginId()));
 
@@ -155,4 +160,5 @@ public class Room extends BaseEntity {
     public boolean isExceedMaxParticipants() {
         return participants.size() >= maxParticipants;
     }
+
 }

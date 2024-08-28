@@ -142,6 +142,24 @@ public class RoomService {
         return room.removeParticipant(user).getId();
     }
 
+    @Transactional
+    public Long exitRoom(Long roomId, Long userId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+
+        if (room.isNotParticipantByUserId(userId)) {
+            throw new BadRequestException(NOT_FOUND_USER_ID);
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new BadRequestException(NOT_FOUND_USER_ID));
+
+        if (room.isRoomLeader(user)) {
+            deleteRoom(roomId);
+            return roomId;
+        }
+
+        return room.removeParticipant(user).getId();
+    }
+
     @Transactional(readOnly = true)
     public List<RoomJoinedResponse> getJoinedRooms(CustomOAuth2User oAuth2User) {
 
@@ -180,4 +198,6 @@ public class RoomService {
         roomRepository.delete(room);
         return room.getId();
     }
+
+
 }

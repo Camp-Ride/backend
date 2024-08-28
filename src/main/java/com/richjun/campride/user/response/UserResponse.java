@@ -8,11 +8,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserResponse {
+
+    private Long userId;
     private String nickname;
 
 
     public static UserResponse from(User user) {
-        return new UserResponse(user.getNickname());
+        return new UserResponse(user.getId(), user.getNickname());
     }
 
 }

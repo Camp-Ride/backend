@@ -45,6 +45,12 @@ public class ChatController {
         kafkaProducerService.sendReaction(chatMessage);
     }
 
+    @MessageMapping("/send/leave")
+    public void sendKick(@Payload ChatMessage chatMessage) {
+        log.info(chatMessage.toString());
+        kafkaProducerService.sendLeave(chatMessage);
+    }
+
     @GetMapping("/messages")
     public List<ChatMessageResponse> getMessages(@RequestParam Long roomId, @RequestParam int startOffset,
                                                  @RequestParam int count) {

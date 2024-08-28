@@ -5,6 +5,8 @@ import com.richjun.campride.chat.domain.ChatMessage;
 import com.richjun.campride.chat.domain.repository.ChatMessageRedisTemplateRepository;
 import com.richjun.campride.chat.domain.repository.ChatMessageRepository;
 import com.richjun.campride.chat.response.ChatMessageResponse;
+import com.richjun.campride.room.domain.repository.ParticipantRepository;
+import com.richjun.campride.room.domain.repository.RoomRepository;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,8 @@ public class ChatService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatMessageRedisTemplateRepository chatMessageRedisTemplateRepository;
+    private final RoomRepository roomRepository;
+    private final ParticipantRepository participantRepository;
 
 
     public void sendMessage(ChatMessage message) {
@@ -80,5 +84,9 @@ public class ChatService {
 
     public void sendReaction(ChatMessage message) {
         simpMessagingTemplate.convertAndSend("/topic/messages/room/" + message.getRoomId(), message);
+    }
+
+    public void kickUser(ChatMessage message) {
+
     }
 }

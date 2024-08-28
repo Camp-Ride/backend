@@ -1,6 +1,7 @@
 package com.richjun.campride.chat.service;
 
 import com.richjun.campride.chat.domain.ChatMessage;
+import com.richjun.campride.room.service.RoomService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class KafkaConsumerService {
 
 
     private final ChatService chatService;
+    private final RoomService roomService;
 
     @KafkaListener(topics = "chat-topic", groupId = "chat-group")
     public void listenChatTopic(ChatMessage message) {
@@ -37,6 +39,16 @@ public class KafkaConsumerService {
         log.info("received : " + message.toString());
         chatService.addReaction(message);
         chatService.sendReaction(message);
+
+    }
+
+    @KafkaListener(topics = "leave-topic", groupId = "chat-group")
+    public void listenLeaveTopic(ChatMessage message) {
+        log.info("received : " + message.toString());
+
+        roomService.exitRoom(message.getRoomId(), Long.parseLong(message.getText()));
+        chatService.addMessage(message);
+        chatService.sendMessage(message);
 
     }
 
