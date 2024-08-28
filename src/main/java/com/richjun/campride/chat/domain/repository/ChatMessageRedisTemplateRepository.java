@@ -117,4 +117,8 @@ public class ChatMessageRedisTemplateRepository {
         }
 
     }
+
+    public void deleteRoomMessages(Long id) {
+        redisTemplate.delete("/room/" + id);
+    }
 }

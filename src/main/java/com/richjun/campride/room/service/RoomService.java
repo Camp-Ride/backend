@@ -123,7 +123,7 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponse exitRoom(Long id, CustomOAuth2User oAuth2User) {
+    public Long exitRoom(Long id, CustomOAuth2User oAuth2User) {
 
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
 
@@ -135,11 +135,11 @@ public class RoomService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
         if (room.isRoomLeader(user)) {
-            roomRepository.deleteById(id);
-            return RoomResponse.from(room);
+            deleteRoom(id);
+            return id;
         }
 
-        return RoomResponse.from(room.removeParticipant(user));
+        return room.removeParticipant(user).getId();
     }
 
     @Transactional(readOnly = true)
@@ -176,6 +176,7 @@ public class RoomService {
 
     public Long deleteRoom(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+        chatMessageRedisTemplateRepository.deleteRoomMessages(room.getId());
         roomRepository.delete(room);
         return room.getId();
     }
