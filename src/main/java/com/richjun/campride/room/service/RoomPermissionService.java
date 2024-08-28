@@ -26,6 +26,12 @@ class RoomPermissionService {
         User user = userRepository.findBySocialLoginId(oAuth2User.getName()).orElseThrow(() -> new BadRequestException(
                 NOT_FOUND_USER_ID));
 
+        Boolean isExistRoomId = roomRepository.existsById(roomId);
+
+        if (!isExistRoomId) {
+            throw new BadRequestException(ExceptionCode.NOT_FOUND_ROOM_ID);
+        }
+
         Boolean isCreatedBy = roomRepository.existsByIdAndLeaderNickname(roomId, user.getNickname());
 
         if (!isCreatedBy) {

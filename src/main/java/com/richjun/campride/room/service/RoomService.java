@@ -174,4 +174,9 @@ public class RoomService {
     }
 
 
+    public Long deleteRoom(Long id) {
+        Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+        roomRepository.delete(room);
+        return room.getId();
+    }
 }
