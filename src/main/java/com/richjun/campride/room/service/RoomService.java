@@ -119,6 +119,7 @@ public class RoomService {
 
         Participant participant = new Participant(user, room, 0L);
 
+
         return RoomResponse.from(room.addParticipant(participant));
     }
 

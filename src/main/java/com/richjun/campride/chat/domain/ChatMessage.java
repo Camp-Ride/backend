@@ -24,6 +24,7 @@ public class ChatMessage implements Serializable {
     @Indexed
     private Long roomId;
     private String userId;
+    private String userNickname;
     private String text;
     private String imageUrl;
     private LocalDateTime timestamp;
@@ -42,6 +43,7 @@ public class ChatMessage implements Serializable {
                 "\"id\":\"" + id + "\"," +
                 "\"roomId\":" + roomId + "," +
                 "\"userId\":\"" + userId + "\"," +
+                "\"userNickname\":\"" + userNickname + "\"," +
                 "\"text\":\"" + text + "\"," +
                 "\"imageUrl\":\"" + imageUrl + "\"," +
                 "\"timestamp\":\"" + timestamp + "\"," +

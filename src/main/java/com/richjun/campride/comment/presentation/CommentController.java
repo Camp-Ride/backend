@@ -38,8 +38,8 @@ public class CommentController {
 
     @PutMapping("/comment/{id}")
     @PreAuthorize("@commentPermissionService.isCreatedBy(#id, #oAuth2User)")
-    public ResponseEntity<Long> updateComment(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
-                                              @PathVariable Long id,
+    public ResponseEntity<Long> updateComment(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+                                              @PathVariable final Long id,
                                               @RequestBody @Valid final CommentRequest commentRequest) {
 
         return ResponseEntity.ok().body(commentService.updateRoom(id, commentRequest));
@@ -47,8 +47,8 @@ public class CommentController {
 
     @DeleteMapping("/comment/{id}")
     @PreAuthorize("@commentPermissionService.isCreatedBy(#id, #oAuth2User)")
-    public ResponseEntity<Long> deleteComment(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
-                                              @PathVariable Long id) {
+    public ResponseEntity<Long> deleteComment(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+                                              @PathVariable final Long id) {
 
         return ResponseEntity.ok().body(commentService.deleteComment(id));
     }

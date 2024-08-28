@@ -17,6 +17,7 @@ public class ChatMessageResponse {
     private Long id;
     private Long roomId;
     private String userId;
+    private String userNickname;
     private String text;
     private String imageUrl;
     private LocalDateTime timestamp;
@@ -31,6 +32,7 @@ public class ChatMessageResponse {
                 chatMessage.getRoomId(),
                 chatMessage
                         .getUserId(),
+                chatMessage.getUserNickname(),
                 chatMessage.getText(),
                 chatMessage.getImageUrl(),
                 chatMessage.getTimestamp(),

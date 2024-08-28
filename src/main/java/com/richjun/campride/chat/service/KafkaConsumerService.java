@@ -53,4 +53,13 @@ public class KafkaConsumerService {
     }
 
 
+    @KafkaListener(topics = "join-topic", groupId = "chat-group")
+    public void listenJoinTopic(ChatMessage message) {
+        log.info("received : " + message.toString());
+
+        chatService.addMessage(message);
+        chatService.sendMessage(message);
+    }
+
+
 }

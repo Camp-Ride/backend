@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.chat.domain.ChatMessage;
+import com.richjun.campride.chat.domain.ChatMessageType;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.room.response.LatestMessageResponse;
@@ -71,16 +72,18 @@ public class ChatMessageRedisTemplateRepository {
         String value = redisTemplate.opsForZSet().reverseRange("/room/" + id, 0, 0).stream().findFirst().orElse(null);
 
         if (value == null) {
-            return LatestMessageResponse.of("", "", LocalDateTime.MIN);
+            return LatestMessageResponse.of("", "", "", null, LocalDateTime.MIN);
         }
 
         try {
             JsonNode jsonNode = objectMapper.readTree(value);
             String sender = jsonNode.path("userId").asText();
             String content = jsonNode.path("text").asText();
+            String nickname = jsonNode.path("userNickname").asText();
+            ChatMessageType chatMessageType = ChatMessageType.valueOf(jsonNode.path("chatMessageType").asText());
             LocalDateTime timestamp = objectMapper.convertValue(jsonNode.path("timestamp"), LocalDateTime.class);
 
-            return LatestMessageResponse.of(sender, content, timestamp);
+            return LatestMessageResponse.of(sender, content, nickname, chatMessageType, timestamp);
         } catch (JsonProcessingException e) {
             throw new BadRequestException(ExceptionCode.FAIL_JSON_PARSING);
         }
