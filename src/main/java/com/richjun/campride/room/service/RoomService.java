@@ -196,6 +196,7 @@ public class RoomService {
     }
 
 
+    @Transactional
     public Long deleteRoom(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
         chatMessageRedisTemplateRepository.deleteRoomMessages(room.getId());
@@ -203,7 +204,7 @@ public class RoomService {
         return room.getId();
     }
 
-
+    @Transactional
     public Long kickUser(Long roomId, Long userId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
         User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
