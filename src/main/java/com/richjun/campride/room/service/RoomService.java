@@ -1,6 +1,7 @@
 package com.richjun.campride.room.service;
 
 import static com.richjun.campride.global.exception.ExceptionCode.ALREADY_EXIST_USER;
+import static com.richjun.campride.global.exception.ExceptionCode.BLACKED_USER;
 import static com.richjun.campride.global.exception.ExceptionCode.EXCEED_MAX_PARTICIPANTS;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_ROOM_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
@@ -105,6 +106,8 @@ public class RoomService {
     public RoomResponse joinRoom(Long id, CustomOAuth2User oAuth2User) {
 
         Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
         if (room.isAleadyParticipant(oAuth2User.getName())) {
             throw new BadRequestException(ALREADY_EXIST_USER);
@@ -114,8 +117,9 @@ public class RoomService {
             throw new BadRequestException(EXCEED_MAX_PARTICIPANTS);
         }
 
-        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        if (room.isBlackUser(user)) {
+            throw new BadRequestException(BLACKED_USER);
+        }
 
         Participant participant = new Participant(user, room, 0L);
 

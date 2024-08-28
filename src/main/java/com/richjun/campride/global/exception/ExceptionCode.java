@@ -21,6 +21,7 @@ public enum ExceptionCode {
     NOT_FOUND_LIKE_ID(3005, "해당하는 Like Id를 찾지 못했습니다."),
     NOT_FOUND_CONTENT_TYPE(3005, "해당하는 Content Type을 찾지 못했습니다."),
     ALREADY_EXIST_USER(3006, "이미 존재하는 User입니다."),
+    BLACKED_USER(3007, "차단된 User입니다."),
 
 
 
