@@ -25,7 +25,12 @@ public class KafkaProducerService {
         kafkaTemplate.send("leave-topic", chatMessage);
     }
 
+    public void sendKick(ChatMessage chatMessage) {
+        kafkaTemplate.send("kick-topic", chatMessage);
+    }
+
     public void sendJoin(ChatMessage chatMessage) {
         kafkaTemplate.send("join-topic", chatMessage);
     }
+
 }

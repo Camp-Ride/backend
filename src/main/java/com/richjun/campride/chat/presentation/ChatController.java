@@ -56,6 +56,12 @@ public class ChatController {
         kafkaProducerService.sendLeave(chatMessage);
     }
 
+    @MessageMapping("/send/kick")
+    public void sendKick(@Payload ChatMessage chatMessage) {
+        log.info(chatMessage.toString());
+        kafkaProducerService.sendKick(chatMessage);
+    }
+
     @PostMapping("/send/join/{roomId}")
     public ResponseEntity sendJoin(@PathVariable Long roomId,
                                    @Valid @RequestBody final ChatJoinRequest chatJoinRequest) {

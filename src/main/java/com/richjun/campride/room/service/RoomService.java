@@ -119,7 +119,6 @@ public class RoomService {
 
         Participant participant = new Participant(user, room, 0L);
 
-
         return RoomResponse.from(room.addParticipant(participant));
     }
 
@@ -151,7 +150,7 @@ public class RoomService {
             throw new BadRequestException(NOT_FOUND_USER_ID);
         }
 
-        User user = userRepository.findById(userId).orElseThrow(()-> new BadRequestException(NOT_FOUND_USER_ID));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
         if (room.isRoomLeader(user)) {
             deleteRoom(roomId);
@@ -201,4 +200,12 @@ public class RoomService {
     }
 
 
+    public Long kickUser(Long roomId, Long userId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        room.kickUser(user);
+        room.addBlackUser(user);
+        return room.getId();
+
+    }
 }

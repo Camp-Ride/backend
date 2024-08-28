@@ -49,8 +49,18 @@ public class KafkaConsumerService {
         roomService.exitRoom(message.getRoomId(), Long.parseLong(message.getText()));
         chatService.addMessage(message);
         chatService.sendMessage(message);
-
     }
+
+    @KafkaListener(topics = "kick-topic", groupId = "chat-group")
+    public void listenKickTopic(ChatMessage message) {
+        log.info("received : " + message.toString());
+
+        roomService.kickUser(message.getRoomId(), Long.parseLong(message.getText()));
+        chatService.addMessage(message);
+        chatService.sendMessage(message);
+    }
+
+
 
 
     @KafkaListener(topics = "join-topic", groupId = "chat-group")

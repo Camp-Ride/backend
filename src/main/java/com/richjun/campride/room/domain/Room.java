@@ -92,6 +92,9 @@ public class Room extends BaseEntity {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomBlackUser> blackUsers;
+
 
     public static Room of(final RoomRequest roomRequest, String leaderNickname,
                           Location departureLocation,
@@ -108,6 +111,7 @@ public class Room extends BaseEntity {
                 roomRequest.getTrainingDays(),
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
+                new ArrayList<>(),
                 new ArrayList<>()
         );
     }
@@ -160,5 +164,25 @@ public class Room extends BaseEntity {
     public boolean isExceedMaxParticipants() {
         return participants.size() >= maxParticipants;
     }
+
+    public Room addBlackUser(User user) {
+        RoomBlackUser roomBlackUser = new RoomBlackUser(this, user);
+        blackUsers.add(roomBlackUser);
+        return this;
+    }
+
+    public Room removeBlackUser(User user) {
+        blackUsers.removeIf(blackUser -> blackUser.getUser().equals(user));
+        return this;
+    }
+
+    public boolean isBlackUser(User user) {
+        return blackUsers.stream().anyMatch(blackUser -> blackUser.getUser().equals(user));
+    }
+
+    public void kickUser(User user) {
+        participants.removeIf(participant -> participant.getUser().getId().equals(user.getId()));
+    }
+
 
 }
