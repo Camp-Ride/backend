@@ -1,14 +1,22 @@
 package com.richjun.campride.global.auth.handler;
 
 
+import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
+import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
 import static com.richjun.campride.global.jwt.util.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
+import com.richjun.campride.global.exception.BadRequestException;
+import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
+import com.richjun.campride.global.jwt.domain.RefreshToken;
+import com.richjun.campride.global.jwt.domain.repository.RefreshTokenRepository;
 import com.richjun.campride.global.jwt.dto.TokenResponse;
 import com.richjun.campride.global.jwt.util.CookieAuthorizationRequestRepository;
 import com.richjun.campride.global.jwt.util.CookieUtils;
+import com.richjun.campride.user.domain.User;
+import com.richjun.campride.user.domain.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +38,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
     @Value("${oauth.authorizedRedirectUri}")
     private String redirectUri;
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
@@ -38,15 +48,17 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
     public CustomSuccessHandler(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper,
-                                CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository) {
+                                CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository,
+                                RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-
 
         String targetUrl = determineTargetUrl(request, response, authentication);
 
@@ -77,12 +89,26 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        //JWT 생성
-        TokenResponse tokenInfo = jwtTokenProvider.generateToken(authentication);
+        User user = userRepository.findBySocialLoginId(authentication.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        String accessToken = jwtTokenProvider.generateAccessToken(authentication.getName(),
+                authentication.getAuthorities());
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_REFRESH_TOKEN));
+
+        System.out.println(authentication.getName());
+        System.out.println(authentication.getAuthorities());
+        System.out.println(authentication.getDetails());
+        System.out.println(authentication.getPrincipal());
+        System.out.println(authentication.getCredentials());
+
+        System.out.println("accessToken : " + accessToken);
+        System.out.println("refreshToken : " + refreshToken.getToken());
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accesstoken", tokenInfo.getAccessToken())
-                .queryParam("refreshtoken", tokenInfo.getRefreshToken())
+                .queryParam("accesstoken", accessToken)
+                .queryParam("refreshtoken", refreshToken.getToken())
                 .build().toUriString();
     }
 

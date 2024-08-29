@@ -1,5 +1,8 @@
 package com.richjun.campride.global.jwt.domain;
 
+import static com.richjun.campride.global.jwt.JwtTokenProvider.REFRESH_TOKEN_EXPIRE_TIME;
+
+import com.richjun.campride.global.jwt.JwtTokenProvider;
 import com.richjun.campride.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,9 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.time.Instant;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
 
 
 @Entity(name = "refreshtoken")
+@AllArgsConstructor
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,4 +68,8 @@ public class RefreshToken {
         this.expiryDate = expiryDate;
     }
 
+    public void updateToken() {
+        this.expiryDate = Instant.now().plusMillis(REFRESH_TOKEN_EXPIRE_TIME);
+        this.token = UUID.randomUUID().toString();
+    }
 }

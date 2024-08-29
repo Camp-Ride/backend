@@ -4,7 +4,10 @@ package com.richjun.campride.global.jwt;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.auth.response.OAuth2UserResponse;
 import com.richjun.campride.global.auth.service.CustomOAuth2UserService;
+import com.richjun.campride.global.jwt.domain.RefreshToken;
+import com.richjun.campride.global.jwt.domain.repository.RefreshTokenRepository;
 import com.richjun.campride.global.jwt.dto.TokenResponse;
+import com.richjun.campride.global.jwt.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -16,6 +19,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +48,10 @@ public class JwtTokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final String TYPE_ACCESS = "access";
     private static final String TYPE_REFRESH = "refresh";
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
 
     private final Key key;
 
@@ -112,7 +120,26 @@ public class JwtTokenProvider {
         return accessToken;
     }
 
+    public String generateRefreshToken(String name, Collection<? extends GrantedAuthority> inputAuthorities) {
+        //권한 가져오기
+        String authorities = inputAuthorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
+        Date now = new Date();
+
+        //Generate AccessToken
+        String refreshToken = Jwts.builder()
+                .setSubject(name)
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("type", TYPE_REFRESH)
+                .setIssuedAt(now)   //토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))  //토큰 만료 시간 설정
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return refreshToken;
+    }
 
 
     //JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드

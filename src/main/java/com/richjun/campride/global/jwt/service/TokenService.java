@@ -48,9 +48,12 @@ public class TokenService {
         refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRE_TIME));
         refreshToken.setToken(UUID.randomUUID().toString());
 
+        System.out.println("createRefreshToken : " + refreshToken.getToken());
+
         refreshToken = refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }
+
 
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
@@ -66,18 +69,20 @@ public class TokenService {
         return refreshTokenRepository.deleteByUser(user);
     }
 
+    @Transactional
     public TokenResponse refreshToken(OAuth2User oAuth2User, TokenRefreshRequest tokenRefreshRequest) {
         // jwt가 만료되었기 때문에 refreshToken 요청을 보내는것이다.
         // 제일 먼저 refreshToken이 유효한지 확인
         // 유효하다면 -> accesstoken, refreshtoken 재발급 후 전송
         // 유효하지않다면 -> 유효하지 않다는 메세지와 재로그인 에러 전송
 
-        RefreshToken currentRefreshToken = findByToken(tokenRefreshRequest.getRefreshToken())
+        RefreshToken refreshToken = findByToken(tokenRefreshRequest.getRefreshToken())
                 .map(this::verifyExpiration)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_REFRESH_TOKEN));
 
         String newAccessToken = jwtTokenProvider.generateAccessToken(oAuth2User.getName(), oAuth2User.getAuthorities());
-        RefreshToken refreshToken = createRefreshToken(currentRefreshToken.getUser().getId());
+
+        refreshToken.updateToken();
 
         return new TokenResponse(newAccessToken, refreshToken.getToken());
     }

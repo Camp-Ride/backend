@@ -9,9 +9,13 @@ import com.richjun.campride.global.auth.response.NaverResponse;
 import com.richjun.campride.global.auth.response.OAuth2Response;
 import com.richjun.campride.global.auth.response.OAuth2UserResponse;
 import com.richjun.campride.global.exception.AuthException;
+import com.richjun.campride.global.jwt.domain.RefreshToken;
+import com.richjun.campride.global.jwt.domain.repository.RefreshTokenRepository;
+import com.richjun.campride.global.jwt.service.TokenService;
 import com.richjun.campride.user.domain.User;
 import com.richjun.campride.user.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -26,10 +30,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private static final int MAX_TRY_COUNT = 5;
     private static final int FOUR_DIGIT_RANGE = 10000;
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenService tokenService;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
+    public CustomOAuth2UserService(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
+                                   TokenService tokenService) {
         this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -73,7 +82,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         while (tryCount < MAX_TRY_COUNT) {
             final String nicknameWithRandomNumber = name + generateRandomFourDigitCode();
             if (!userRepository.existsBySocialLoginId(nicknameWithRandomNumber)) {
-                return userRepository.save(new User(socialLoginId, nicknameWithRandomNumber, role));
+                User user = userRepository.save(new User(socialLoginId, nicknameWithRandomNumber, role));
+                refreshTokenRepository.save(tokenService.createRefreshToken(user.getId()));
+                return user;
             }
             tryCount += 1;
         }
