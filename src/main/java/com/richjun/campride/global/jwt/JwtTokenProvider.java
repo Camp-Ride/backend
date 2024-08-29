@@ -4,6 +4,9 @@ package com.richjun.campride.global.jwt;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.auth.response.OAuth2UserResponse;
 import com.richjun.campride.global.auth.service.CustomOAuth2UserService;
+import com.richjun.campride.global.exception.AuthException;
+import com.richjun.campride.global.exception.BadRequestException;
+import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.global.jwt.domain.RefreshToken;
 import com.richjun.campride.global.jwt.domain.repository.RefreshTokenRepository;
 import com.richjun.campride.global.jwt.dto.TokenResponse;
@@ -165,21 +168,26 @@ public class JwtTokenProvider {
 
 
     //토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) throws AuthException{
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
+            throw new AuthException(ExceptionCode.INVALID_ACCESS_TOKEN);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+            throw new AuthException(ExceptionCode.EXPIRED_ACCESS_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+            throw new AuthException(ExceptionCode.UNSUPPORTED_ACCESS_TOKEN);
         } catch (IllegalArgumentException e) {
-            System.out.println("empty!!!");
             log.info("JWT claims string is empty.", e);
+            throw new AuthException(ExceptionCode.EMPTY_ACCESS_TOKEN);
+        } catch (Exception e) {
+            log.info("Unexpected JWT Token error", e);
+            throw new AuthException(ExceptionCode.UNKNOWN_ACCESS_TOKEN);
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {

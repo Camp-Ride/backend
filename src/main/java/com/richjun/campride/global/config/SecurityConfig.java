@@ -3,6 +3,7 @@ package com.richjun.campride.global.config;
 import com.richjun.campride.global.auth.handler.CustomSuccessHandler;
 import com.richjun.campride.global.auth.service.CustomOAuth2UserService;
 import com.richjun.campride.global.jwt.JwtAuthenticationFilter;
+import com.richjun.campride.global.jwt.JwtExceptionHandlerFilter;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
 
 import java.util.Collections;
@@ -62,6 +63,8 @@ public class SecurityConfig {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionHandlerFilter(),
+                        JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/", "/login", "login/oauth2/**", "/ws/**").permitAll()

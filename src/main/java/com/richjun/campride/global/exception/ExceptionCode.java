@@ -1,5 +1,7 @@
 package com.richjun.campride.global.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +26,11 @@ public enum ExceptionCode {
     BLACKED_USER(3007, "차단된 User입니다."),
     NOT_FOUND_REFRESH_TOKEN(3008, "해당하는 Refresh Token을 찾지 못했습니다."),
     EXPIRED_REFRESH_TOKEN(3009, "만료된 Refresh Token입니다."),
-
+    EXPIRED_ACCESS_TOKEN(3010, "만료된 Refresh Token입니다."),
+    INVALID_ACCESS_TOKEN(3011, "유효하지 않은 Refresh Token입니다."),
+    UNSUPPORTED_ACCESS_TOKEN(3012, "지원하지 않는 Access Token입니다."),
+    EMPTY_ACCESS_TOKEN(3013, "비어있는 Access Token입니다."),
+    UNKNOWN_ACCESS_TOKEN(3014, "알 수 없는 Access Token입니다."),
 
     NOT_ROOM_LEADER(4001, "해당하는 Room의 방장이 아니기 때문에 요청을 실행할 수 없습니다."),
     NOT_POST_AUTHOR(4002, "해당하는 Post의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),

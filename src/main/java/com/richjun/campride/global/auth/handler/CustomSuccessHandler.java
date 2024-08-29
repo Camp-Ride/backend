@@ -97,15 +97,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_REFRESH_TOKEN));
 
-        System.out.println(authentication.getName());
-        System.out.println(authentication.getAuthorities());
-        System.out.println(authentication.getDetails());
-        System.out.println(authentication.getPrincipal());
-        System.out.println(authentication.getCredentials());
-
-        System.out.println("accessToken : " + accessToken);
-        System.out.println("refreshToken : " + refreshToken.getToken());
-
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accesstoken", accessToken)
                 .queryParam("refreshtoken", refreshToken.getToken())
