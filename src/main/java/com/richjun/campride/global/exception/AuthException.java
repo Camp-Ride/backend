@@ -3,6 +3,7 @@ package com.richjun.campride.global.exception;
 
 import lombok.Getter;
 
+
 @Getter
 public class AuthException extends RuntimeException {
 

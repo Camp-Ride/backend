@@ -3,6 +3,7 @@ package com.richjun.campride.global.jwt.service;
 import static com.richjun.campride.global.exception.ExceptionCode.EXPIRED_REFRESH_TOKEN;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
 
+import com.richjun.campride.global.exception.AuthException;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
@@ -58,7 +59,7 @@ public class TokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
-            throw new BadRequestException(EXPIRED_REFRESH_TOKEN);
+            throw new AuthException(EXPIRED_REFRESH_TOKEN);
         }
 
         return token;
@@ -78,7 +79,7 @@ public class TokenService {
 
         RefreshToken refreshToken = findByToken(tokenRefreshRequest.getRefreshToken())
                 .map(this::verifyExpiration)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_REFRESH_TOKEN));
+                .orElseThrow(() -> new AuthException(NOT_FOUND_REFRESH_TOKEN));
 
         String newAccessToken = jwtTokenProvider.generateAccessToken(oAuth2User.getName(), oAuth2User.getAuthorities());
 
