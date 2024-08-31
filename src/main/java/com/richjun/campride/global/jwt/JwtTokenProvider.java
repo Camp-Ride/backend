@@ -123,6 +123,23 @@ public class JwtTokenProvider {
         return accessToken;
     }
 
+    public String generateAccessToken(String name, String authorities) {
+
+        Date now = new Date();
+
+        //Generate AccessToken
+        String accessToken = Jwts.builder()
+                .setSubject(name)
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("type", TYPE_ACCESS)
+                .setIssuedAt(now)   //토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))  //토큰 만료 시간 설정
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return accessToken;
+    }
+
     public String generateRefreshToken(String name, Collection<? extends GrantedAuthority> inputAuthorities) {
         //권한 가져오기
         String authorities = inputAuthorities.stream()
@@ -168,7 +185,7 @@ public class JwtTokenProvider {
 
 
     //토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) throws AuthException{
+    public boolean validateToken(String token) throws AuthException {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;

@@ -22,9 +22,9 @@ public class TokenController {
     private TokenService tokenService;
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<TokenResponse> refreshtoken(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
-                                                      @Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
-        return ResponseEntity.ok().body(tokenService.refreshToken(oAuth2User, tokenRefreshRequest));
+    public ResponseEntity<TokenResponse> refreshtoken(
+            @Valid @RequestBody final TokenRefreshRequest tokenRefreshRequest) {
+        return ResponseEntity.ok().body(tokenService.refreshToken(tokenRefreshRequest));
     }
 
 }

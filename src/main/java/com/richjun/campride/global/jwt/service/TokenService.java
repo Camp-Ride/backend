@@ -71,7 +71,7 @@ public class TokenService {
     }
 
     @Transactional
-    public TokenResponse refreshToken(OAuth2User oAuth2User, TokenRefreshRequest tokenRefreshRequest) {
+    public TokenResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
         // jwt가 만료되었기 때문에 refreshToken 요청을 보내는것이다.
         // 제일 먼저 refreshToken이 유효한지 확인
         // 유효하다면 -> accesstoken, refreshtoken 재발급 후 전송
@@ -81,10 +81,13 @@ public class TokenService {
                 .map(this::verifyExpiration)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_REFRESH_TOKEN));
 
-        String newAccessToken = jwtTokenProvider.generateAccessToken(oAuth2User.getName(), oAuth2User.getAuthorities());
+        User user = refreshToken.getUser();
+
+        String newAccessToken = jwtTokenProvider.generateAccessToken(user.getSocialLoginId(), user.getRole());
 
         refreshToken.updateToken();
 
         return new TokenResponse(newAccessToken, refreshToken.getToken());
     }
+
 }
