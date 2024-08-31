@@ -1,6 +1,7 @@
 package com.richjun.campride.post.service;
 
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
+import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_SOCIAL_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_POST_AUTHOR;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_ROOM_LEADER;
 
@@ -25,9 +26,10 @@ class PostPermissionService {
     public Boolean isCreatedBy(Long postId, CustomOAuth2User oAuth2User) {
 
         User user = userRepository.findBySocialLoginId(oAuth2User.getName()).orElseThrow(() -> new BadRequestException(
-                NOT_FOUND_USER_ID));
+                NOT_FOUND_USER_SOCIAL_ID));
 
-        Boolean isCreatedBy = postRepository.existsByIdAndUserId(postId, user.getId());
+        Boolean isCreatedBy = postRepository.existsByIdAndUserId(postId, user.getId())
+                .orElseThrow(() -> new BadRequestException(NOT_POST_AUTHOR));
 
         if (!isCreatedBy) {
             throw new BadRequestException(NOT_POST_AUTHOR);

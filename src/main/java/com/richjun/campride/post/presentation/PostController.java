@@ -49,7 +49,8 @@ public class PostController {
     }
 
     @GetMapping("/post/paging")
-    public ResponseEntity<Page<PostResponse>> searchPostsPage(@RequestParam(value = "sortType" , required = false)  String sortType, Pageable pageable) {
+    public ResponseEntity<Page<PostResponse>> searchPostsPage(
+            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
         return ResponseEntity.ok().body(postService.searchPostsPage(pageable, sortType));
     }
 

@@ -41,7 +41,7 @@ public class PostService {
 
         ImagesResponse imagesResponse = imageService.save(images);
 
-        Post post = Post.of(postRequest, user.getNickname(), imagesResponse);
+        Post post = Post.of(postRequest, user.getNickname(), imagesResponse, user);
 
         return postRepository.save(post).getId();
     }

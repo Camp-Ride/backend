@@ -31,6 +31,8 @@ public enum ExceptionCode {
     UNSUPPORTED_ACCESS_TOKEN(3012, "지원하지 않는 Access Token입니다."),
     EMPTY_ACCESS_TOKEN(3013, "비어있는 Access Token입니다."),
     UNKNOWN_ACCESS_TOKEN(3014, "알 수 없는 Access Token입니다."),
+    NOT_FOUND_USER_SOCIAL_ID(3015, "해당하는 User Social Id를 찾지 못했습니다."),
+
 
     NOT_ROOM_LEADER(4001, "해당하는 Room의 방장이 아니기 때문에 요청을 실행할 수 없습니다."),
     NOT_POST_AUTHOR(4002, "해당하는 Post의 글쓴이가 아니기 때문에 요청을 실행할 수 없습니다."),
