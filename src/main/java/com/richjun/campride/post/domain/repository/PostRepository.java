@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
-    Boolean existsByIdAndNickname(Long postId, String nickname);
+    Boolean existsByIdAndUserId(Long postId, Long id);
 }

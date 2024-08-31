@@ -27,7 +27,7 @@ class PostPermissionService {
         User user = userRepository.findBySocialLoginId(oAuth2User.getName()).orElseThrow(() -> new BadRequestException(
                 NOT_FOUND_USER_ID));
 
-        Boolean isCreatedBy = postRepository.existsByIdAndNickname(postId, user.getNickname());
+        Boolean isCreatedBy = postRepository.existsByIdAndUserId(postId, user.getId());
 
         if (!isCreatedBy) {
             throw new BadRequestException(NOT_POST_AUTHOR);
