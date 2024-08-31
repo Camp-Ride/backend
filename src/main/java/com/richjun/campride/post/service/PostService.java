@@ -1,5 +1,6 @@
 package com.richjun.campride.post.service;
 
+import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_POST_ID;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
@@ -58,14 +59,14 @@ public class PostService {
 
     public PostResponse getPost(final Long id) {
 
-        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_POST_ID));
 
         return PostResponse.of(post);
     }
 
     public Long deletePost(final Long id) {
 
-        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_POST_ID));
         postRepository.delete(post);
 
         return post.getId();
@@ -74,7 +75,7 @@ public class PostService {
 
     public Long updatePost(final Long id, final PostRequest postRequest, final List<MultipartFile> images) {
 
-        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+        Post post = postRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_POST_ID));
         ImagesResponse imagesResponse = imageService.save(images);
 
         List<String> imageNames = imagesResponse.getImageNames();
