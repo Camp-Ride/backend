@@ -47,11 +47,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
     public Page<RoomResponse> searchRoomsByDepartureAndDestinationPage(Pageable pageable, String departure,
                                                                        String destination) {
 
-        System.out.println(departure);
-        System.out.println(destination);
-
         List<Room> rooms = queryFactory.selectFrom(room)
-                .where(departureEq(departure), destinationEq(destination))
+                .where(departureContain(departure), destinationContain(destination))
                 .orderBy(room.departureTime.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -61,21 +58,21 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
                 .map(RoomResponse::from).toList();
 
         long total = queryFactory.selectFrom(room)
-                .where(departureEq(departure), destinationEq(destination))
+                .where(departureContain(departure), destinationContain(destination))
                 .fetchCount();
 
         return new PageImpl<>(roomResponses, pageable, total);
     }
 
 
-    private Predicate departureEq(String departure) {
+    private Predicate departureContain(String departure) {
 
-        return departure == null ? null : room.departure.eq(departure);
+        return departure == null ? null : room.departure.contains(departure);
     }
 
-    private Predicate destinationEq(String destination) {
+    private Predicate destinationContain(String destination) {
 
-        return destination == null ? null : room.destination.eq(destination);
+        return destination == null ? null : room.destination.contains(destination);
     }
 
 
