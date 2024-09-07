@@ -50,3 +50,4 @@ redis_data
 .env
 
 /nginx/nginx.conf
+/nginx/data
