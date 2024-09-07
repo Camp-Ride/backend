@@ -88,7 +88,7 @@ public class ChatController {
     public void testStomp() {
         log.info("test stomp");
         kafkaProducerService.sendMessage(
-                new ChatMessage(1L, 1L, "test", "juntest", "test", "test", LocalDateTime.now(), List.of(), "test",
+                new ChatMessage(1L, 1L, "test", "juntest", "test\ntest\ntest", "test", LocalDateTime.now(), List.of(), "test",
                         ChatMessageType.TEXT, false));
     }
 

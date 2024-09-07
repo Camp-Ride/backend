@@ -61,7 +61,8 @@ public class ChatMessageRedisTemplateRepository {
 
     private ChatMessage deserializeChatMessage(String messageJson) {
         try {
-            return objectMapper.readValue(messageJson, ChatMessage.class);
+            log.info(messageJson);
+            return objectMapper.readValue(messageJson.replace("\n", "\\n"), ChatMessage.class);
         } catch (Exception e) {
             throw new RuntimeException("Failed to deserialize ChatMessage", e);
         }
@@ -74,9 +75,10 @@ public class ChatMessageRedisTemplateRepository {
         if (value == null) {
             return LatestMessageResponse.of("", "", "", null, LocalDateTime.MIN);
         }
-
+        log.info(value);
         try {
-            JsonNode jsonNode = objectMapper.readTree(value);
+            JsonNode jsonNode = objectMapper.readTree(value.replace("\n","\\n"));
+
             String sender = jsonNode.path("userId").asText();
             String content = jsonNode.path("text").asText();
             String nickname = jsonNode.path("userNickname").asText();
