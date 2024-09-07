@@ -77,7 +77,7 @@ public class ChatMessageRedisTemplateRepository {
         }
         log.info(value);
         try {
-            JsonNode jsonNode = objectMapper.readTree(value.replace("\n","\\n"));
+            JsonNode jsonNode = objectMapper.readTree(value.replace("\n", "\\n"));
 
             String sender = jsonNode.path("userId").asText();
             String content = jsonNode.path("text").asText();
@@ -114,7 +114,7 @@ public class ChatMessageRedisTemplateRepository {
         }
 
         try {
-            JsonNode jsonNode = objectMapper.readTree(value);
+            JsonNode jsonNode = objectMapper.readTree(value.replace("\n", "\\n"));
             Long lastSeenMessageScore = Long.parseLong(jsonNode.path("id").asText());
             return lastSeenMessageScore;
         } catch (JsonProcessingException e) {
