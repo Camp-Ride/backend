@@ -51,3 +51,5 @@ redis_data
 
 /nginx/nginx.conf
 /nginx/data
+/certbot
+

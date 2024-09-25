@@ -53,8 +53,8 @@ public class RoomController {
 
     @DeleteMapping("/room/{id}")
     @PreAuthorize("@roomPermissionService.isCreatedBy(#id, #oAuth2User)")
-    public ResponseEntity<Long> deleteRoom(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
-                                           @PathVariable Long id) {
+    public ResponseEntity<Long> deleteRoom(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+                                           @PathVariable final Long id) {
         return ResponseEntity.ok().body(roomService.deleteRoom(id));
     }
 
