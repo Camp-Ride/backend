@@ -49,7 +49,10 @@ redis_data
 
 .env
 
-/nginx/nginx.conf
-/nginx/data
+/data/nginx/nginx.conf
+/data/nginx/data
+/data
 /certbot
+
+init-letsencrypt.sh
 
