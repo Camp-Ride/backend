@@ -73,7 +73,7 @@ public class SecurityConfig {
                         JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/", "/login", "login/oauth2/**", "/ws/**").permitAll()
+                        .requestMatchers("/", "/login", "login/oauth2/**", "/ws/**", "/wss/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(
