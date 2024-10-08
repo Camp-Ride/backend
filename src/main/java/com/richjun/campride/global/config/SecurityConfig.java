@@ -56,7 +56,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/v1/token/refreshtoken");
+        return (web) -> web.ignoring().requestMatchers("/api/v1/token/refreshtoken","/ws/**", "/wss/**");
     }
 
     @Bean
