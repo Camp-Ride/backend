@@ -1,22 +1,22 @@
 package com.richjun.campride.chat.presentation;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.richjun.campride.chat.domain.ChatMessage;
 import com.richjun.campride.chat.domain.ChatMessageType;
-import com.richjun.campride.chat.domain.ChatReaction;
 import com.richjun.campride.chat.request.ChatJoinRequest;
 import com.richjun.campride.chat.response.ChatMessageResponse;
 import com.richjun.campride.chat.service.ChatService;
 import com.richjun.campride.chat.service.KafkaProducerService;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -36,6 +36,40 @@ public class ChatController {
 
     private final KafkaProducerService kafkaProducerService;
     private final ChatService chatService;
+
+    @EventListener
+    public void handleSessionConnected(SessionConnectedEvent event) {
+
+        // StompHeaderAccessor로 CONNECT_ACK 메시지 래핑
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        // CONNECT 메시지에서 헤더 접근
+        GenericMessage<?> connectMessage = (GenericMessage<?>) accessor.getHeader("simpConnectMessage");
+
+        if (connectMessage != null) {
+            StompHeaderAccessor connectAccessor = StompHeaderAccessor.wrap(connectMessage);
+            List<String> userIds = connectAccessor.getNativeHeader("userId");
+
+            if (userIds != null && !userIds.isEmpty()) {
+                String userId = userIds.get(0);
+                log.info("Connected userId: " + userId);
+                chatService.userConnected(userId);
+            } else {
+                log.info("UserId not found in CONNECT headers.");
+            }
+        } else {
+            log.info("CONNECT message not found.");
+        }
+
+    }
+
+
+    @EventListener
+    public void handleSessionDisconnect(SessionDisconnectEvent event) {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+        String userId = sha.getSessionAttributes().get("userId").toString();
+        chatService.userDisconnected(userId);
+    }
 
 
     @MessageMapping("/send")
@@ -88,7 +122,8 @@ public class ChatController {
     public void testStomp() {
         log.info("test stomp");
         kafkaProducerService.sendMessage(
-                new ChatMessage(1L, 1L, "test", "juntest", "test\ntest\ntest", "test", LocalDateTime.now(), List.of(), "test",
+                new ChatMessage(1L, 1L, "test", "juntest", "test\ntest\ntest", "test", LocalDateTime.now(), List.of(),
+                        "test",
                         ChatMessageType.TEXT, false));
     }
 

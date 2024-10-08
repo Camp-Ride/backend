@@ -1,5 +1,6 @@
 package com.richjun.campride.global.config;
 
+import com.richjun.campride.global.jwt.CustomHandshakeInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -15,8 +16,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(endpoint).setAllowedOrigins("*").withSockJS();
-        registry.addEndpoint(endpoint).setAllowedOrigins("*");
+        registry.addEndpoint("/ws").setAllowedOrigins("*").addInterceptors(new CustomHandshakeInterceptor()).withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("*").addInterceptors(new CustomHandshakeInterceptor());
 
     }
 

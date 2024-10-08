@@ -9,6 +9,8 @@ import com.richjun.campride.room.domain.repository.ParticipantRepository;
 import com.richjun.campride.room.domain.repository.RoomRepository;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +29,12 @@ public class ChatService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatMessageRedisTemplateRepository chatMessageRedisTemplateRepository;
-    private final RoomRepository roomRepository;
-    private final ParticipantRepository participantRepository;
+    private Set<String> onlineUsers = ConcurrentHashMap.newKeySet();
 
+
+    public boolean isUserOnline(String userId) {
+        return onlineUsers.contains(userId);
+    }
 
     public void sendMessage(ChatMessage message) {
         simpMessagingTemplate.convertAndSend("/topic/messages/room/" + message.getRoomId(), message);
@@ -88,5 +93,13 @@ public class ChatService {
 
     public void kickUser(ChatMessage message) {
 
+    }
+
+    public void userConnected(String userId) {
+        onlineUsers.add(userId);
+    }
+
+    public void userDisconnected(String userId) {
+        onlineUsers.remove(userId);
     }
 }

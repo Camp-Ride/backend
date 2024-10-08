@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,10 @@ public class KafkaConsumerService {
     private final ChatService chatService;
     private final RoomService roomService;
 
+
     @KafkaListener(topics = "chat-topic", groupId = "chat-group")
     public void listenChatTopic(ChatMessage message) {
         log.info("received : " + message.toString());
-        log.info("received : " + message.getText());
         chatService.addMessage(message);
         chatService.sendMessage(message);
 
@@ -60,8 +61,6 @@ public class KafkaConsumerService {
         chatService.addMessage(message);
         chatService.sendMessage(message);
     }
-
-
 
 
     @KafkaListener(topics = "join-topic", groupId = "chat-group")
