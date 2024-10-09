@@ -38,4 +38,11 @@ public class UserService {
         user.update(userRequest);
         return UserResponse.from(user);
     }
+
+    public String getUserFCMToken(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        return user.getDeviceToken();
+    }
 }

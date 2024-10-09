@@ -34,18 +34,21 @@ public class User extends BaseEntity {
     private String socialLoginId;
     private String nickname;
     private String role;
+    private String deviceToken;
 
     @OneToMany(mappedBy = "user")
     private List<Participant> participants = new ArrayList<>();
 
 
-    public User(String socialLoginId, String nickname, String role) {
+    public User(String socialLoginId, String nickname, String role, String deviceToken) {
         this.socialLoginId = socialLoginId;
         this.nickname = nickname;
         this.role = role;
+        this.deviceToken = deviceToken;
     }
 
     public void update(UserRequest userRequest) {
         this.nickname = userRequest.getNickname();
     }
+
 }

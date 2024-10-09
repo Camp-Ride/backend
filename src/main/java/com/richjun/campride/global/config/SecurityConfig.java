@@ -56,7 +56,8 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/v1/token/refreshtoken","/ws/**", "/wss/**");
+        return (web) -> web.ignoring()
+                .requestMatchers("/api/v1/token/refreshtoken", "/api/v1/login**", "/ws/**", "/wss/**");
     }
 
     @Bean
@@ -72,8 +73,9 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtExceptionHandlerFilter(),
                         JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/", "/login", "login/oauth2/**", "/ws/**", "/wss/**").permitAll()
+                        .requestMatchers("/", "/login", "/api/v1/login/**", "/api/v1/login**", "login/oauth2/**",
+                                "/ws/**", "/wss/**")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(
