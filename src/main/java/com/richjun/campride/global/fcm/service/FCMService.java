@@ -36,29 +36,12 @@ public class FCMService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public String sendFCMNotification(FCMSendRequest fcmSendRequest) {
-
-        Message fcmMessage = Message.builder()
-                .putData("message", fcmSendRequest.getBody())
-                .putData("title", fcmSendRequest.getTitle())
-                .setToken(getUserFCMToken(fcmSendRequest.getUserId()))
-                .build();
-
-        try {
-            return FirebaseMessaging.getInstance().send(fcmMessage);
-        } catch (FirebaseMessagingException e) {
-            return "FCM send failed: " + e.getMessage();
-        }
-
-    }
-
     private String getUserFCMToken(Long userId) {
-
         return userService.getUserFCMToken(userId);
     }
 
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "app/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json";
+        String firebaseConfigPath = "firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
@@ -69,7 +52,7 @@ public class FCMService {
     }
 
     private String makeMessage(String token, String title, String body)
-            throws JsonParseException, JsonProcessingException {
+            throws JsonProcessingException {
         FCMMessageRequest fcmMessage = FCMMessageRequest.builder()
                 .message(FCMMessageRequest.Message.builder()
                         .token(token)
