@@ -70,7 +70,7 @@ dependencies {
 
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
-
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
 }
 

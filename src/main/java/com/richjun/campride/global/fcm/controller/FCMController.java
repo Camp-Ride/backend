@@ -4,6 +4,7 @@ import com.richjun.campride.global.fcm.dto.FCMSendRequest;
 import com.richjun.campride.global.fcm.service.FCMService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,9 +23,9 @@ public class FCMController {
     private FCMService fcmService;
 
     @PostMapping("/send")
-    public ResponseEntity<String> pushMessage(@RequestBody @Validated FCMSendRequest fcmSendRequest)
+    public ResponseEntity<Response> pushMessage(@RequestBody @Validated FCMSendRequest fcmSendRequest)
             throws IOException {
 
-        return ResponseEntity.ok().body(fcmService.sendFCMNotification(fcmSendRequest));
+        return ResponseEntity.ok().body(fcmService.sendMessageTo(fcmSendRequest));
     }
 }
