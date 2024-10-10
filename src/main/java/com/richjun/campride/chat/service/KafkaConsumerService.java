@@ -32,7 +32,7 @@ public class KafkaConsumerService {
         log.info("received : " + message.toString());
         chatService.addMessage(message);
         chatService.sendMessage(message);
-
+        chatService.sendFCMToOfflineUser(message.getRoomId(), message);
     }
 
 

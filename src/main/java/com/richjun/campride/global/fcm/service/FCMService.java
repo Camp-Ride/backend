@@ -9,9 +9,11 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.richjun.campride.global.fcm.dto.FCMMessageRequest;
 import com.richjun.campride.global.fcm.dto.FCMSendRequest;
+import com.richjun.campride.room.response.ParticipantResponse;
 import com.richjun.campride.user.service.UserService;
 import java.io.IOException;
 import java.util.List;
+import okhttp3.Response.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,6 @@ public class FCMService {
 
     private static final String API_URL = "https://fcm.googleapis.com/v1/projects/campride-87f0d/messages:send";
 
-    @Autowired
-    private FirebaseMessaging firebaseMessaging;
 
     @Autowired
     private UserService userService;
@@ -65,22 +65,30 @@ public class FCMService {
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
-    public Response sendMessageTo(FCMSendRequest fcmSendRequest) throws IOException {
-        String message = makeMessage(getUserFCMToken(fcmSendRequest.getUserId()), fcmSendRequest.getTitle(),
-                fcmSendRequest.getBody());
+    public Response sendMessageTo(FCMSendRequest fcmSendRequest) {
 
-        OkHttpClient client = new OkHttpClient();
+        try {
+            String message = makeMessage(getUserFCMToken(fcmSendRequest.getUserId()), fcmSendRequest.getTitle(),
+                    fcmSendRequest.getBody());
 
-        RequestBody requestBody = RequestBody.create(message,
-                MediaType.get("application/json; charset=utf-8"));
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                .build();
+            OkHttpClient client = new OkHttpClient();
 
-        Response response = client.newCall(request).execute();
-        return response;
+            RequestBody requestBody = RequestBody.create(message,
+                    MediaType.get("application/json; charset=utf-8"));
+            Request request = new Request.Builder()
+                    .url(API_URL)
+                    .post(requestBody)
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            return response;
+
+        } catch (IOException e) {
+            return new Response.Builder().code(500).message("Internal Server Error").build();
+        }
     }
+
+
 }
