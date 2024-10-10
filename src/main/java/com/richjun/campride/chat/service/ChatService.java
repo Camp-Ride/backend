@@ -44,7 +44,7 @@ public class ChatService {
     private final RoomService roomService;
     private final FCMService fcmService;
 
-    private Set<String> onlineUsers = ConcurrentHashMap.newKeySet();
+    private Set<Long> onlineUsers = ConcurrentHashMap.newKeySet();
 
     public void sendFCMToOfflineUser(Long roomId, ChatMessage message) {
         RoomResponse room = roomService.getRoom(roomId);
@@ -129,11 +129,11 @@ public class ChatService {
 
     }
 
-    public void userConnected(String userId) {
+    public void userConnected(Long userId) {
         onlineUsers.add(userId);
     }
 
-    public void userDisconnected(String userId) {
+    public void userDisconnected(Long userId) {
         onlineUsers.remove(userId);
     }
 }

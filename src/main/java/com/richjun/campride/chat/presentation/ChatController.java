@@ -51,7 +51,7 @@ public class ChatController {
             List<String> userIds = connectAccessor.getNativeHeader("userId");
 
             if (userIds != null && !userIds.isEmpty()) {
-                String userId = userIds.get(0);
+                Long userId = Long.parseLong(userIds.get(0));
                 log.info("Connected userId: " + userId);
                 chatService.userConnected(userId);
             } else {
@@ -67,7 +67,7 @@ public class ChatController {
     @EventListener
     public void handleSessionDisconnect(SessionDisconnectEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        String userId = sha.getSessionAttributes().get("userId").toString();
+        Long userId = Long.parseLong(sha.getSessionAttributes().get("userId").toString());
         chatService.userDisconnected(userId);
     }
 
