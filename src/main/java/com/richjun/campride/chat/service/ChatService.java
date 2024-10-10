@@ -53,6 +53,11 @@ public class ChatService {
                 .filter(participant -> !isUserOnline(participant.getId()))
                 .collect(Collectors.toList());
 
+        log.info("offlineUsers");
+        offlineUsers.forEach(offlineUser -> log.info(offlineUser.toString()));
+        log.info("onlineUsers");
+        onlineUsers.forEach(onlineUser -> log.info(onlineUser.toString()));
+
         offlineUsers.forEach(offlineUser -> {
             fcmService.sendMessageTo(
                     new FCMSendRequest(offlineUser.getId(), message.getUserNickname(), message.getText()));
