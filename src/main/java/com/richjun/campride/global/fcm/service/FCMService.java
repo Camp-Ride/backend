@@ -58,10 +58,11 @@ public class FCMService {
                         .token(token)
                         .notification(FCMMessageRequest.Notification.builder()
                                 .title(title)
-                                .sound("default")
                                 .body(body)
                                 .build()
-                        ).build()).validateOnly(false).build();
+                        ).apns(FCMMessageRequest.Apns.builder().payload(FCMMessageRequest.Payload.builder()
+                                .aps(FCMMessageRequest.Aps.builder().sound("default").build()).build()).build())
+                        .build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }

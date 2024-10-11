@@ -18,6 +18,7 @@ public class FCMMessageRequest {
         private Notification notification;
         private String token;
         private Data data;
+        private Apns apns;
     }
 
     @Builder
@@ -26,7 +27,6 @@ public class FCMMessageRequest {
     public static class Notification {
         private String title;
         private String body;
-        private String sound;
     }
 
     @Builder
@@ -35,6 +35,27 @@ public class FCMMessageRequest {
     public static class Data {
         private String name;
         private String description;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Apns {
+        private Payload payload;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Payload {
+        private Aps aps;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Aps {
+        private String sound;
     }
 
 }
