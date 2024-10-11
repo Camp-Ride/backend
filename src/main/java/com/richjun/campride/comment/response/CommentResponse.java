@@ -14,6 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CommentResponse {
     private Long id;
+    private Long authorId;
     private String nickname;
     private String content;
     private List<LikeResponse> likeResponses;
@@ -22,8 +23,9 @@ public class CommentResponse {
     public static List<CommentResponse> from(List<Comment> comments) {
 
         return comments.stream()
-                .map((comment) -> new CommentResponse(comment.getId(), comment.getAuthor(), comment.getContent(),
-                        LikeResponse.from(comment.getLikes()), comment.getCreatedAt())).collect(Collectors.toList());
+                .map((comment) -> new CommentResponse(comment.getId(), comment.getAuthorId(), comment.getAuthor(),
+                        comment.getContent(), LikeResponse.from(comment.getLikes()), comment.getCreatedAt()))
+                .collect(Collectors.toList());
     }
 
 }

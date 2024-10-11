@@ -31,6 +31,7 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long authorId;
     private String author;
     private String content;
     @ManyToOne
@@ -43,9 +44,10 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports;
 
-    public static Comment of(CommentRequest commentRequest, String nickname, Post post) {
+    public static Comment of(CommentRequest commentRequest, Long authorId, String nickname, Post post) {
         return new Comment(
                 null,
+                authorId,
                 nickname,
                 commentRequest.getContent(),
                 post,

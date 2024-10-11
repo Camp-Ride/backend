@@ -33,7 +33,7 @@ public class CommentService {
         Post post = postRepository.findById(commentRequest.getPostId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_POST_ID));
 
-        Comment comment = Comment.of(commentRequest, user.getNickname(), post);
+        Comment comment = Comment.of(commentRequest, user.getId(), user.getNickname(), post);
         commentRepository.save(comment);
 
         return comment.getId();
