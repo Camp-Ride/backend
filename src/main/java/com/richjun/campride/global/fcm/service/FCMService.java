@@ -60,9 +60,7 @@ public class FCMService {
                                 .title(title)
                                 .body(body)
                                 .build()
-                        ).apns(FCMMessageRequest.Apns.builder().payload(FCMMessageRequest.Payload.builder()
-                                .aps(FCMMessageRequest.Aps.builder().sound("default").build()).build()).build())
-                        .build()).validateOnly(false).build();
+                        ).build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
