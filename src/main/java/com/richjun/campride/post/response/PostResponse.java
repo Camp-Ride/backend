@@ -13,6 +13,7 @@ import lombok.Getter;
 public class PostResponse {
 
     private Long id;
+    private Long authorId;
     private String name;
     private String title;
     private String contents;
@@ -25,6 +26,7 @@ public class PostResponse {
     public static PostResponse of(Post post) {
         return new PostResponse(
                 post.getId(),
+                post.getUser().getId(),
                 post.getNickname(),
                 post.getTitle(),
                 post.getContents(),
