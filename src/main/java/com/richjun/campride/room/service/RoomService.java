@@ -51,7 +51,8 @@ public class RoomService {
         User leaderUser = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
-        Room room = Room.of(roomRequest, leaderUser.getNickname(), departureLocation, destinationLocation);
+        Room room = Room.of(roomRequest, leaderUser.getId(), leaderUser.getNickname(), departureLocation,
+                destinationLocation);
 
         roomRepository.save(room);
 

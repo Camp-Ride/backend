@@ -27,6 +27,7 @@ import lombok.Getter;
 public class RoomResponse {
 
     private Long id;
+    private Long leaderId;
     private String leaderNickname;
     private String title;
     private String departure;
@@ -43,6 +44,7 @@ public class RoomResponse {
 
     public static RoomResponse from(Room room) {
         return new RoomResponse(room.getId(),
+                room.getLeaderId(),
                 room.getLeaderNickname(),
                 room.getTitle(),
                 room.getDeparture(),

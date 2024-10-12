@@ -13,6 +13,7 @@ import lombok.Getter;
 public class RoomJoinedResponse {
 
     private Long id;
+    private Long leaderId;
     private String leaderNickname;
     private String title;
     private String departure;
@@ -32,6 +33,7 @@ public class RoomJoinedResponse {
     public static RoomJoinedResponse from(Room room, LatestMessageResponse latestMessageResponse,
                                           Long unreadMessageCount) {
         return new RoomJoinedResponse(room.getId(),
+                room.getLeaderId(),
                 room.getLeaderNickname(),
                 room.getTitle(),
                 room.getDeparture(),

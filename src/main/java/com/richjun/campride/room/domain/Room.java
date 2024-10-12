@@ -50,6 +50,7 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    private Long leaderId;
     private String leaderNickname;
 
     @Column(nullable = false)
@@ -96,12 +97,13 @@ public class Room extends BaseEntity {
     private List<RoomBlackUser> blackUsers;
 
 
-    public static Room of(final RoomRequest roomRequest, String leaderNickname,
+    public static Room of(final RoomRequest roomRequest, Long leaderId, String leaderNickname,
                           Location departureLocation,
                           Location destinationLocation) {
         return new Room(
                 null,
                 roomRequest.getTitle(),
+                leaderId,
                 leaderNickname,
                 roomRequest.getDeparture(),
                 departureLocation,
@@ -154,7 +156,7 @@ public class Room extends BaseEntity {
     }
 
     public boolean isRoomLeader(User user) {
-        return leaderNickname.equals(user.getNickname());
+        return leaderId.equals(user.getId());
     }
 
     public Optional<Participant> findParticipantByUser(User user) {
