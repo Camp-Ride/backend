@@ -50,13 +50,11 @@ public class User extends BaseEntity {
 
     public void update(UserRequest userRequest) {
         this.nickname = userRequest.getNickname();
+        this.isNicknameUpdated = true;
     }
 
     public boolean getIsNicknameUpdated() {
         return isNicknameUpdated;
     }
 
-    public void setIsNicknameUpdated(boolean isNicknameUpdated) {
-        this.isNicknameUpdated = isNicknameUpdated;
-    }
 }
