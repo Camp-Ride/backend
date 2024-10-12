@@ -32,6 +32,7 @@ public enum ExceptionCode {
     EMPTY_ACCESS_TOKEN(3013, "비어있는 Access Token입니다."),
     UNKNOWN_ACCESS_TOKEN(3014, "알 수 없는 Access Token입니다."),
     NOT_FOUND_USER_SOCIAL_ID(3015, "해당하는 User Social Id를 찾지 못했습니다."),
+    DUPLICATED_NICKNAME(3016, "중복된 닉네임입니다."),
 
 
     NOT_ROOM_LEADER(4001, "해당하는 Room의 방장이 아니기 때문에 요청을 실행할 수 없습니다."),
