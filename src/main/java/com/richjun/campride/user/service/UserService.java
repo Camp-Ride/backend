@@ -35,7 +35,7 @@ public class UserService {
         User user = userRepository.findBySocialLoginId(customOAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
-        if (userRepository.existsByNickname(userRequest.getNickname())) {
+        if (userRepository.existsByNicknameAndIdNot(userRequest.getNickname(), user.getId())) {
             throw new BadRequestException(DUPLICATED_NICKNAME);
         }
 
