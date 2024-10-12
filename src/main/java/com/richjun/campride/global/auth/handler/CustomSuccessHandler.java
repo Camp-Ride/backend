@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.methods.HttpGet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -92,6 +93,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         User user = userRepository.findBySocialLoginId(authentication.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
 
+        Boolean isNicknameUpdated = user.getIsNicknameUpdated() ? true : false;
+
         String accessToken = jwtTokenProvider.generateAccessToken(authentication.getName(),
                 authentication.getAuthorities());
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
@@ -100,6 +103,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accesstoken", accessToken)
                 .queryParam("refreshtoken", refreshToken.getToken())
+                .queryParam("isNicknameUpdated", isNicknameUpdated)
                 .build().toUriString();
     }
 
