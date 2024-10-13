@@ -19,7 +19,7 @@ public class FirebaseConfig {
 //        app/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json
 
         FileInputStream serviceAccount = new FileInputStream(
-                "src/main/resources/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json");
+                "app/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json");
 
         FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build();
