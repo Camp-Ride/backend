@@ -16,10 +16,10 @@ public class FirebaseConfig {
     public FirebaseMessaging firebaseMessaging() throws IOException {
 
         //src/main/resources/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json
-        //app/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json
+//        app/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json
 
         FileInputStream serviceAccount = new FileInputStream(
-                "/app/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json");
+                "src/main/resources/firebase/campride-87f0d-firebase-adminsdk-mtnnn-a480ac194b.json");
 
         FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build();

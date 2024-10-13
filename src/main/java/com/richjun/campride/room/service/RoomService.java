@@ -106,23 +106,41 @@ public class RoomService {
     @Transactional
     public RoomResponse joinRoom(Long id, CustomOAuth2User oAuth2User) {
 
-        Room room = roomRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+        log.info("0");
+        log.info("Attempting to find room with id: {}", id);
+
+        Room room = roomRepository.findByIdWithLock(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_ROOM_ID));
+
+        log.info("Room found: {}", room);
+
+        log.info("Attempting to find user with social login id: {}", oAuth2User.getName());
+
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        log.info("1");
 
         if (room.isAleadyParticipant(oAuth2User.getName())) {
             throw new BadRequestException(ALREADY_EXIST_USER);
         }
 
+        log.info("2");
+
         if (room.isExceedMaxParticipants()) {
             throw new BadRequestException(EXCEED_MAX_PARTICIPANTS);
         }
+
+        log.info("3");
 
         if (room.isBlackUser(user)) {
             throw new BadRequestException(BLACKED_USER);
         }
 
+        log.info("4");
+
         Participant participant = new Participant(user, room, 0L);
+
+        log.info("5");
 
         return RoomResponse.from(room.addParticipant(participant));
     }
