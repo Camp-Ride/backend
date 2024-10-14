@@ -53,7 +53,9 @@ jobs:
 
       - name: make firebase config file
         run: |
-          cd ./src/main/resources
+          cd ./src/main
+          mkdir ./resources
+          cd ./resources
           mkdir ./firebase
           cd ./firebase
           touch ./"${{ secrets.FIREBASE_CONFIG_FILE_NAME }}"
