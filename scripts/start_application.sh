@@ -1,62 +1,71 @@
 #!/bin/bash
 set -e
 
-echo "Starting new version"
+echo "Starting new version deployment"
 cd /home/ubuntu/develop/backend
 
-# 현재 실행 중인 컨테이너 확인
+NGINX_CONF="/home/ubuntu/develop/backend/data/nginx/nginx.conf"
+HEALTH_CHECK_URL="http://localhost:"
+MAX_RETRIES=10
+RETRY_INTERVAL=10
+
+# 현재 실행 중인 컨테이너 확인 및 새 컨테이너 설정
 CURRENT_CONTAINER=$(docker ps --filter "name=campride-api-server" --format "{{.Names}}")
 if [ "$CURRENT_CONTAINER" == "campride-api-server-blue" ]; then
     NEW_CONTAINER="campride-api-server-green"
-    NEW_CONTAINER_NAME="app-green"
+    NEW_SERVICE="app-green"
     NEW_PORT=8081
+    CURRENT_SERVICE="app-blue"
     CURRENT_PORT=8080
 else
     NEW_CONTAINER="campride-api-server-blue"
-    NEW_CONTAINER_NAME="app-blue"
+    NEW_SERVICE="app-blue"
     NEW_PORT=8080
+    CURRENT_SERVICE="app-green"
     CURRENT_PORT=8081
 fi
 
+echo "Current container: $CURRENT_CONTAINER (Port: $CURRENT_PORT)"
+echo "New container: $NEW_CONTAINER (Port: $NEW_PORT)"
+
 # 새 컨테이너 시작
-docker compose up -d $NEW_CONTAINER_NAME
+echo "Starting new container..."
+docker-compose up -d $NEW_SERVICE
 
-echo "New container: $NEW_CONTAINER"
-echo "New container name: $NEW_CONTAINER_NAME"
-echo "New container port: $NEW_PORT"
-
-# 새 컨테이너가 준비될 때까지 대기
-echo "Waiting for the new container to be ready..."
-for i in {1..10}; do
-    if curl -s http://localhost:$NEW_PORT/actuator/health | grep -q "UP"; then
+# 새 컨테이너 헬스 체크
+echo "Performing health check on new container..."
+for i in $(seq 1 $MAX_RETRIES); do
+    if curl -s "${HEALTH_CHECK_URL}${NEW_PORT}/actuator/health" | grep -q "UP"; then
         echo "New version is healthy"
         # 새 버전의 라이브러리를 메인 디렉토리로 이동
         mv build/libs build/libs_old
         mv build/libs_new build/libs
-        # 이전 버전 컨테이너 중지
-        docker compose stop $OLD_SERVICE
-        break
-    fi
-    if [ $i -eq 10 ]; then
-        echo "New version is not healthy. Rolling back."
 
-        # 롤백
-        NGINX_CONF="/home/ubuntu/develop/backend/data/nginx/nginx.conf"
-        sed -i "s/proxy_pass  http:\/\/$NEW_CONTAINER:8080/proxy_pass  http:\/\/$OLD_CONTAINER:8080/" $NGINX_CONF
-        docker compose exec -T nginx nginx -s reload
-        docker compose stop $NEW_SERVICE
-        docker compose start $OLD_SERVICE
-        echo "Rolled back to $OLD_CONTAINER"
-        exit 1
+        # Nginx 설정 업데이트
+        sed -i "s/proxy_pass  http:\/\/$CURRENT_CONTAINER:$CURRENT_PORT/proxy_pass  http:\/\/$NEW_CONTAINER:$NEW_PORT/" $NGINX_CONF
+
+        # Nginx 설정 리로드
+        docker-compose exec -T nginx nginx -s reload
+
+        echo "Switched traffic to $NEW_CONTAINER on port $NEW_PORT"
+
+        # 이전 버전 컨테이너 중지
+        docker-compose stop $CURRENT_SERVICE
+
+        echo "Deployment completed successfully"
+        exit 0
     fi
-    sleep 10
+
+    echo "Attempt $i of $MAX_RETRIES: New version not healthy yet. Retrying in $RETRY_INTERVAL seconds..."
+    sleep $RETRY_INTERVAL
 done
 
-# Nginx 설정 업데이트
-NGINX_CONF="/home/ubuntu/develop/backend/data/nginx/nginx.conf"
-sed -i "s/proxy_pass  http:\/\/$CURRENT_CONTAINER:$CURRENT_PORT/proxy_pass  http:\/\/$NEW_CONTAINER:$NEW_PORT/" $NGINX_CONF
+# 헬스 체크 실패 시 롤백
+echo "New version is not healthy. Rolling back..."
 
-# Nginx 설정 리로드
-docker compose exec -T nginx nginx -s reload
+# 새 컨테이너 중지 및 제거
+docker-compose stop $NEW_SERVICE
+docker-compose rm -f $NEW_SERVICE
 
-echo "Switched traffic to $NEW_CONTAINER on port $NEW_PORT"
+echo "Rolled back to $CURRENT_CONTAINER"
+exit 1
