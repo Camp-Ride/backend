@@ -8,9 +8,9 @@ cp -R /home/ubuntu/develop/backend/build/libs/* build/libs_new/
 CURRENT_CONTAINER=$(docker ps --filter "name=campride-api-server" --format "{{.Names}}")
 echo "Current container: $CURRENT_CONTAINER"
 if [ "$CURRENT_CONTAINER" == "campride-api-server-blue" ]; then
-    NEW_CONTAINER="campride-api-server-green"
+    NEW_CONTAINER="app-green"
 else
-    NEW_CONTAINER="campride-api-server-blue"
+    NEW_CONTAINER="app-blue"
 fi
 
 # 새 버전의 이미지 빌드

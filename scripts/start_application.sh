@@ -7,16 +7,18 @@ cd /home/ubuntu/develop/backend
 CURRENT_CONTAINER=$(docker ps --filter "name=campride-api-server" --format "{{.Names}}")
 if [ "$CURRENT_CONTAINER" == "campride-api-server-blue" ]; then
     NEW_CONTAINER="campride-api-server-green"
+    NEW_CONTAINER_NAME="app-green"
     NEW_PORT=8081
     CURRENT_PORT=8080
 else
     NEW_CONTAINER="campride-api-server-blue"
+    NEW_CONTAINER_NAME="app-blue"
     NEW_PORT=8080
     CURRENT_PORT=8081
 fi
 
 # 새 컨테이너 시작
-docker-compose up -d $NEW_CONTAINER
+docker-compose up -d $NEW_CONTAINER_NAME
 
 # 새 컨테이너가 준비될 때까지 대기
 echo "Waiting for the new container to be ready..."
