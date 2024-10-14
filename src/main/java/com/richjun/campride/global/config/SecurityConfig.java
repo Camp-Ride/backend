@@ -59,7 +59,7 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers("/api/v1/token/refreshtoken", "/api/v1/login**", "/ws/**", "/wss/**",
                         "https://fcm.googleapis.com/v1/projects/campride-87f0d/messages:send", "/actuator/health",
-                        "api/v1/user/test");
+                        "/api/v1/user/test");
     }
 
     @Bean
