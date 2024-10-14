@@ -38,6 +38,12 @@ for i in $(seq 1 $MAX_RETRIES); do
     if curl -s "${HEALTH_CHECK_URL}${NEW_PORT}/actuator/health" | grep -q "UP"; then
         echo "New version is healthy"
         # 새 버전의 라이브러리를 메인 디렉토리로 이동
+
+        # libs_old 디렉토리가 존재하면 삭제
+        if [ -d "build/libs_old" ]; then
+            rm -rf build/libs_old
+        fi
+
         mv build/libs build/libs_old
         mv build/libs_new build/libs
 
