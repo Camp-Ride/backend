@@ -56,7 +56,7 @@ jobs:
           cd ./src/main/resources
           mkdir ./firebase
           cd ./firebase
-          touch ./${{ secrets.FIREBASE_CONFIG_FILE_NAME }}
+          touch ./${{ secrets.FIREBASE_FILE_NAME }}
           echo "${{ secrets.FIREBASE_CONFIG }}" > ./${{ secrets.FIREBASE_CONFIG_FILE_NAME }}
 
 
