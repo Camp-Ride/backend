@@ -43,7 +43,9 @@ jobs:
       # (3) gitignore한 파일 직접 생성해주기
       - name: make resources file
         run: |
-          cd ./src/main/resources
+          cd ./src/main
+          mkdir ./resources
+          cd ./resources
           touch ./application-prod.yaml
           echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yaml
           touch ./application.properties.yaml
@@ -60,7 +62,7 @@ jobs:
 
       # (4) Gradle build
       - name: Build with Gradle
-        run : ./gradlew clean build --exclude-task test
+        run: ./gradlew clean build --exclude-task test
 
       # (5) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
