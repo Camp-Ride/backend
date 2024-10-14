@@ -11,4 +11,4 @@ else
 fi
 
 # 새 버전의 이미지 빌드
-docker-compose build $NEW_CONTAINER
+docker compose build $NEW_CONTAINER
