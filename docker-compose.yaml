@@ -77,23 +77,48 @@ services:
       - "5540:5540"
     networks:
       - campride_network
-  app:
-    container_name: campride-api-server
+
+  app-blue:
+    container_name: campride-api-server-blue
     build: .
     volumes:
       - ./logs:/logs
+      - ./build/libs:/app/libs
     ports:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: ${MYSQL_PROD_URL}
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SERVER_PORT: 8080
     depends_on:
       - db
     restart: always
     networks:
       - campride_network
       - app-tier
+
+  app-green:
+    container_name: campride-api-server-green
+    build: .
+    volumes:
+      - ./logs:/logs
+      - ./build/libs:/app/libs
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: ${MYSQL_PROD_URL}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SERVER_PORT: 8081
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - campride_network
+      - app-tier
+
+
 
   nginx:
     image: nginx:latest
