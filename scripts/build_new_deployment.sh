@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Building new version deployment"
 cd /home/ubuntu/develop/backend
 cp -R /home/ubuntu/develop/backend/build/libs/* build/libs_new/

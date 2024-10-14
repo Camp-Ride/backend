@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Validating new deployment"
 cd /home/ubuntu/develop/backend
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Starting new version"
 cd /home/ubuntu/develop/backend
 
