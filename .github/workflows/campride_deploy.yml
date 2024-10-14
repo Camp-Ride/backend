@@ -44,9 +44,9 @@ jobs:
       - name: make resources file
         run: |
           cd ./src/main/resources
-          touch ./application.properties
+          touch ./application-prod.yaml
           echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yaml
-          touch ./application-dev.yml
+          touch ./application.properties.yaml
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.properties.yaml
 
       - name: make firebase config file
