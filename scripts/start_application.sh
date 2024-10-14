@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 echo "Starting new version"
 cd /home/ubuntu/develop/backend
@@ -18,7 +19,7 @@ else
 fi
 
 # 새 컨테이너 시작
-docker-compose up -d $NEW_CONTAINER_NAME
+docker compose up -d $NEW_CONTAINER_NAME
 
 echo "New container: $NEW_CONTAINER"
 echo "New container name: $NEW_CONTAINER_NAME"
@@ -31,7 +32,7 @@ for i in {1..30}; do
         echo "New container is ready"
         break
     fi
-    if [ $i -eq 30 ]; then
+    if [ $i -eq 15 ]; then
         echo "New container failed to start"
         exit 1
     fi
