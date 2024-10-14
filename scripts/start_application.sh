@@ -20,6 +20,10 @@ fi
 # 새 컨테이너 시작
 docker-compose up -d $NEW_CONTAINER_NAME
 
+echo "New container: $NEW_CONTAINER"
+echo "New container name: $NEW_CONTAINER_NAME"
+echo "New container port: $NEW_PORT"
+
 # 새 컨테이너가 준비될 때까지 대기
 echo "Waiting for the new container to be ready..."
 for i in {1..30}; do
@@ -39,6 +43,6 @@ NGINX_CONF="/home/ubuntu/develop/backend/data/nginx/nginx.conf"
 sed -i "s/proxy_pass  http:\/\/$CURRENT_CONTAINER:$CURRENT_PORT/proxy_pass  http:\/\/$NEW_CONTAINER:$NEW_PORT/" $NGINX_CONF
 
 # Nginx 설정 리로드
-docker-compose exec -T nginx nginx -s reload
+docker compose exec -T nginx nginx -s reload
 
 echo "Switched traffic to $NEW_CONTAINER on port $NEW_PORT"
