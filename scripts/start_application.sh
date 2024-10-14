@@ -27,13 +27,26 @@ echo "New container port: $NEW_PORT"
 
 # 새 컨테이너가 준비될 때까지 대기
 echo "Waiting for the new container to be ready..."
-for i in {1..30}; do
+for i in {1..10}; do
     if curl -s http://localhost:$NEW_PORT/actuator/health | grep -q "UP"; then
-        echo "New container is ready"
+        echo "New version is healthy"
+        # 새 버전의 라이브러리를 메인 디렉토리로 이동
+        mv build/libs build/libs_old
+        mv build/libs_new build/libs
+        # 이전 버전 컨테이너 중지
+        docker compose stop $OLD_SERVICE
         break
     fi
-    if [ $i -eq 15 ]; then
-        echo "New container failed to start"
+    if [ $i -eq 10 ]; then
+        echo "New version is not healthy. Rolling back."
+
+        # 롤백
+        NGINX_CONF="/home/ubuntu/develop/backend/data/nginx/nginx.conf"
+        sed -i "s/proxy_pass  http:\/\/$NEW_CONTAINER:8080/proxy_pass  http:\/\/$OLD_CONTAINER:8080/" $NGINX_CONF
+        docker compose exec -T nginx nginx -s reload
+        docker compose stop $NEW_SERVICE
+        docker compose start $OLD_SERVICE
+        echo "Rolled back to $OLD_CONTAINER"
         exit 1
     fi
     sleep 10
