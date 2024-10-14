@@ -101,8 +101,6 @@
 //        executorService.shutdown();
 //        executorService.awaitTermination(1, TimeUnit.MINUTES);
 //
-//        Room updatedRoom = roomRepository.findById(testRoom.getId()).orElseThrow();
-//
 //        // 검증
 //        assertEquals(MAX_PARTICIPANTS, successfulJoins.get(), "성공적으로 참가한 사용자 수가 최대 참가자 수와 일치해야 합니다.");
 //        assertEquals(CONCURRENT_USERS - MAX_PARTICIPANTS, failedJoins.get(), "실패한 참가 시도 수가 예상과 일치해야 합니다.");
