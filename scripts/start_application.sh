@@ -30,7 +30,7 @@ echo "New container: $NEW_CONTAINER (Port: $NEW_PORT)"
 
 # 새 컨테이너 시작
 echo "Starting new container..."
-docker-compose up -d $NEW_SERVICE
+docker compose up -d $NEW_SERVICE
 
 # 새 컨테이너 헬스 체크
 echo "Performing health check on new container..."
@@ -45,12 +45,12 @@ for i in $(seq 1 $MAX_RETRIES); do
         sed -i "s/proxy_pass  http:\/\/$CURRENT_CONTAINER:$CURRENT_PORT/proxy_pass  http:\/\/$NEW_CONTAINER:$NEW_PORT/" $NGINX_CONF
 
         # Nginx 설정 리로드
-        docker-compose exec -T nginx nginx -s reload
+        docker compose exec -T nginx nginx -s reload
 
         echo "Switched traffic to $NEW_CONTAINER on port $NEW_PORT"
 
         # 이전 버전 컨테이너 중지
-        docker-compose stop $CURRENT_SERVICE
+        docker compose stop $CURRENT_SERVICE
 
         echo "Deployment completed successfully"
         exit 0
@@ -64,8 +64,8 @@ done
 echo "New version is not healthy. Rolling back..."
 
 # 새 컨테이너 중지 및 제거
-docker-compose stop $NEW_SERVICE
-docker-compose rm -f $NEW_SERVICE
+docker compose stop $NEW_SERVICE
+docker compose rm -f $NEW_SERVICE
 
 echo "Rolled back to $CURRENT_CONTAINER"
 exit 1
