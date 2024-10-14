@@ -118,8 +118,6 @@ services:
       - campride_network
       - app-tier
 
-
-
   nginx:
     image: nginx:latest
     restart: unless-stopped
@@ -132,7 +130,8 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     depends_on:
-      - app
+      - app-blue
+      - app-green
     networks:
       - campride_network
       - app-tier
