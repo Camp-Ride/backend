@@ -4,6 +4,7 @@ cp -R /home/ubuntu/develop/backend/build/libs/* build/libs_new/
 
 # 현재 실행 중인 컨테이너 확인
 CURRENT_CONTAINER=$(docker ps --filter "name=campride-api-server" --format "{{.Names}}")
+echo "Current container: $CURRENT_CONTAINER"
 if [ "$CURRENT_CONTAINER" == "campride-api-server-blue" ]; then
     NEW_CONTAINER="campride-api-server-green"
 else
