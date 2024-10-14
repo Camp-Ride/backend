@@ -44,5 +44,10 @@ public class UserController {
         return "redirect:/oauth2/authorization/" + provider;
     }
 
+    @GetMapping("/user/test")
+    public ResponseEntity<String> testAPI() {
+        return ResponseEntity.ok().body("test success");
+    }
+
 
 }
