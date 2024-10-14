@@ -30,7 +30,7 @@ echo "New container: $NEW_CONTAINER (Port: $NEW_PORT)"
 
 # 새 컨테이너 시작
 echo "Starting new container..."
-docker compose up -d $NEW_SERVICE
+docker compose up -d --remove-orphans $NEW_SERVICE
 
 # 새 컨테이너 헬스 체크
 echo "Performing health check on new container..."
@@ -48,7 +48,8 @@ for i in $(seq 1 $MAX_RETRIES); do
         mv build/libs_new build/libs
 
         # Nginx 설정 업데이트
-        sed -i "s/proxy_pass  http:\/\/$CURRENT_CONTAINER:$CURRENT_PORT/proxy_pass  http:\/\/$NEW_CONTAINER:$NEW_PORT/" $NGINX_CONF
+        sed -i "s|proxy_pass  http://$CURRENT_CONTAINER:$CURRENT_PORT|proxy_pass  http://$NEW_CONTAINER:$NEW_PORT|" $NGINX_CONF
+
 
         # Nginx 설정 리로드
         docker compose exec -T nginx nginx -s reload
