@@ -13,6 +13,7 @@ import com.richjun.campride.global.jwt.domain.repository.RefreshTokenRepository;
 import com.richjun.campride.global.jwt.service.TokenService;
 import com.richjun.campride.user.domain.User;
 import com.richjun.campride.user.domain.repository.UserRepository;
+import com.richjun.campride.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -27,18 +28,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private static final int MAX_TRY_COUNT = 5;
-    private static final int FOUR_DIGIT_RANGE = 10000;
 
-    private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final TokenService tokenService;
+    private final UserService userService;
 
-    public CustomOAuth2UserService(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
+    public CustomOAuth2UserService(UserService userService, RefreshTokenRepository refreshTokenRepository,
                                    TokenService tokenService) {
-        this.userRepository = userRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.tokenService = tokenService;
+        this.userService = userService;
     }
 
     @Override
@@ -66,7 +61,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String deviceToken = getDeviceTokenFromSession();
 
-        findOrCreateUser(oAuth2UserResponse.getNickname(), oAuth2UserResponse.getUsername(),
+        userService.findOrCreateUser(oAuth2UserResponse.getNickname(), oAuth2UserResponse.getUsername(),
                 oAuth2UserResponse.getRole(), deviceToken);
 
         return new CustomOAuth2User(oAuth2UserResponse);
@@ -81,30 +76,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return deviceToken;
     }
 
-    private User findOrCreateUser(final String socialLoginId, final String name, String role, String deviceToken) {
-        return userRepository.findBySocialLoginId(socialLoginId)
-                .orElseGet(() -> createUser(socialLoginId, name, role, deviceToken));
-    }
-
-
-    private User createUser(final String socialLoginId, final String name, String role, String deviceToken) {
-        int tryCount = 0;
-        while (tryCount < MAX_TRY_COUNT) {
-            final String nicknameWithRandomNumber = name + generateRandomFourDigitCode();
-            if (!userRepository.existsBySocialLoginId(nicknameWithRandomNumber)) {
-                User user = userRepository.save(new User(socialLoginId, nicknameWithRandomNumber, role, deviceToken));
-                refreshTokenRepository.save(tokenService.createRefreshToken(user.getId()));
-                return user;
-            }
-            tryCount += 1;
-        }
-        throw new AuthException(FAIL_TO_GENERATE_RANDOM_NICKNAME);
-    }
-
-
-    private String generateRandomFourDigitCode() {
-        final int randomNumber = (int) (Math.random() * FOUR_DIGIT_RANGE);
-        return String.format("%04d", randomNumber);
-    }
 
 }

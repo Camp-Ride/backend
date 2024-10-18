@@ -1,6 +1,8 @@
 package com.richjun.campride.user.presentation;
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
+import com.richjun.campride.global.auth.request.AppleLoginRequest;
+import com.richjun.campride.global.jwt.dto.TokenResponse;
 import com.richjun.campride.user.request.UserRequest;
 import com.richjun.campride.user.response.UserResponse;
 import com.richjun.campride.user.service.UserService;
@@ -42,6 +44,12 @@ public class UserController {
     public String login(@RequestParam String provider, @RequestParam String deviceToken, Model model) {
         model.addAttribute("deviceToken", deviceToken);
         return "redirect:/oauth2/authorization/" + provider;
+    }
+
+    @GetMapping("/login/apple")
+    public ResponseEntity<TokenResponse> loginWithApple(@RequestBody AppleLoginRequest appleLoginRequest) {
+        return ResponseEntity.ok().body(userService.loginWithApple(appleLoginRequest.getIdentityToken(),
+                appleLoginRequest.getDeviceToken()));
     }
 
 }

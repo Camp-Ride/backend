@@ -161,6 +161,23 @@ public class JwtTokenProvider {
         return refreshToken;
     }
 
+    public String generateRefreshToken(String name, String authorities) {
+
+        Date now = new Date();
+
+        //Generate AccessToken
+        String refreshToken = Jwts.builder()
+                .setSubject(name)
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("type", TYPE_REFRESH)
+                .setIssuedAt(now)   //토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))  //토큰 만료 시간 설정
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return refreshToken;
+    }
+
 
     //JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
