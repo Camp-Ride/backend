@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:
-  - source: /
+  - source: /build/libs/campride-0.0.1-SNAPSHOT.jar
     destination: /home/ubuntu/develop/backend
     overwrite: yes
 
