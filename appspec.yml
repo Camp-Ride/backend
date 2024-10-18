@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source: /build/libs/campride-0.0.1-SNAPSHOT.jar
-    destination: /home/ubuntu/develop/backend
+    destination: /home/ubuntu/develop/backend/build/libs
     overwrite: yes
 
 file_exists_behavior: OVERWRITE
