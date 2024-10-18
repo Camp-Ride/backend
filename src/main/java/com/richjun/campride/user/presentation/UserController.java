@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,5 +55,12 @@ public class UserController {
         return ResponseEntity.ok().body(appleLoginService.loginWithApple(appleLoginRequest.getIdentityToken(),
                 appleLoginRequest.getDeviceToken()));
     }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal final CustomOAuth2User oAuth2User) {
+        userService.deleteUser(oAuth2User);
+        return ResponseEntity.ok().body("User deleted successfully");
+    }
+
 
 }

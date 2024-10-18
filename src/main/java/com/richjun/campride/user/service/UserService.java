@@ -89,4 +89,11 @@ public class UserService {
         final int randomNumber = (int) (Math.random() * FOUR_DIGIT_RANGE);
         return String.format("%04d", randomNumber);
     }
+
+    public void deleteUser(CustomOAuth2User oAuth2User) {
+        User user = userRepository.findBySocialLoginId(oAuth2User.getName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
+
+        userRepository.delete(user);
+    }
 }
