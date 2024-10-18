@@ -67,6 +67,8 @@ services:
     networks:
       - campride_network
       - app-tier
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru
+
 
   redis-insight:
     image: redislabs/redisinsight:latest
