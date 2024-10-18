@@ -72,10 +72,10 @@ public class AppleLoginService {
 
             // 5. 사용자 정보 추출
             String appleUserId = claims.getSubject();
-            String email = claims.get("email", String.class);
+            String username = claims.get("email", String.class).split("@")[0];
 
             // 6. 사용자 찾기 또는 생성
-            User user = userService.findOrCreateUser(appleUserId, email, "ROLE_USER", deviceToken);
+            User user = userService.findOrCreateUser(appleUserId, username, "ROLE_USER", deviceToken);
 
             // 7. 자체 토큰 생성
             String accessToken = jwtTokenProvider.generateAccessToken(user.getSocialLoginId(), user.getRole());
