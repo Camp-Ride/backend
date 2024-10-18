@@ -55,10 +55,6 @@ public class AppleLoginService {
         }
     }
 
-    public ApplePublicKey getMatchedApplePublicKey(String kid, String alg) throws AuthenticationException {
-        ApplePublicKeyResponse response = fetchApplePublicKeys();
-        return response.getMatchedKey(kid, alg);
-    }
 
     public TokenResponse loginWithApple(String identity_Token, String deviceToken) {
 
