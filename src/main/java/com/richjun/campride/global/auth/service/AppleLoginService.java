@@ -10,6 +10,7 @@ import com.richjun.campride.global.auth.response.ApplePublicKeyResponse;
 import com.richjun.campride.global.auth.util.ApplePublicKeyGenerator;
 import com.richjun.campride.global.exception.AuthException;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
+import com.richjun.campride.global.jwt.dto.TokenAppleLoginResponse;
 import com.richjun.campride.global.jwt.dto.TokenResponse;
 import com.richjun.campride.global.jwt.service.TokenService;
 import com.richjun.campride.user.domain.User;
@@ -56,7 +57,7 @@ public class AppleLoginService {
     }
 
 
-    public TokenResponse loginWithApple(String identity_Token, String deviceToken) {
+    public TokenAppleLoginResponse loginWithApple(String identity_Token, String deviceToken) {
 
         try {
             Map<String, String> headers = tokenService.parseHeaders(identity_Token);
@@ -72,7 +73,14 @@ public class AppleLoginService {
 
             // 5. 사용자 정보 추출
             String appleUserId = claims.getSubject();
-            String username = claims.get("email", String.class).split("@")[0];
+            String email = claims.get("email", String.class);
+            String username = "";
+
+            if (email != null && !email.isEmpty()) {
+                username = email.split("@")[0];
+            } else {
+                username = appleUserId.length() >= 4 ? appleUserId.substring(0, 4) : appleUserId;
+            }
 
             // 6. 사용자 찾기 또는 생성
             User user = userService.findOrCreateUser(appleUserId, username, "ROLE_USER", deviceToken);
@@ -82,7 +90,7 @@ public class AppleLoginService {
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getSocialLoginId(), user.getRole());
 
             // 8. 토큰 응답 반환
-            return new TokenResponse(accessToken, refreshToken);
+            return new TokenAppleLoginResponse(accessToken, refreshToken, user.getIsNicknameUpdated());
         } catch (AuthenticationException e) {
             throw new AuthException(FAIL_TO_LOGIN_WITH_APPLE);
         } catch (NoSuchAlgorithmException e) {
