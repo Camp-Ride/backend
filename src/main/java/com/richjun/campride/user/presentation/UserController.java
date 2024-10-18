@@ -2,6 +2,7 @@ package com.richjun.campride.user.presentation;
 
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
 import com.richjun.campride.global.auth.request.AppleLoginRequest;
+import com.richjun.campride.global.auth.service.AppleLoginService;
 import com.richjun.campride.global.jwt.dto.TokenResponse;
 import com.richjun.campride.user.request.UserRequest;
 import com.richjun.campride.user.response.UserResponse;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 public class UserController {
 
     private final UserService userService;
+    private final AppleLoginService appleLoginService;
 
 
     @GetMapping("/user")
@@ -48,7 +50,7 @@ public class UserController {
 
     @GetMapping("/login/apple")
     public ResponseEntity<TokenResponse> loginWithApple(@RequestBody AppleLoginRequest appleLoginRequest) {
-        return ResponseEntity.ok().body(userService.loginWithApple(appleLoginRequest.getIdentityToken(),
+        return ResponseEntity.ok().body(appleLoginService.loginWithApple(appleLoginRequest.getIdentityToken(),
                 appleLoginRequest.getDeviceToken()));
     }
 

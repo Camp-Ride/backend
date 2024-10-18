@@ -38,7 +38,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenService tokenService;
-    private final AppleLoginService appleLoginService;
 
     public UserResponse getMyInfo(CustomOAuth2User customOAuth2User) {
         User user = userRepository.findBySocialLoginId(customOAuth2User.getName())
@@ -66,21 +65,6 @@ public class UserService {
 
         return user.getDeviceToken();
     }
-
-    public TokenResponse loginWithApple(String identityToken, String deviceToken) {
-        try {
-            return appleLoginService.loginWithApple(identityToken, deviceToken);
-        } catch (AuthenticationException e) {
-            throw new AuthException(FAIL_TO_LOGIN_WITH_APPLE);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     public User findOrCreateUser(final String socialLoginId, final String name, String role, String deviceToken) {
         return userRepository.findBySocialLoginId(socialLoginId)
