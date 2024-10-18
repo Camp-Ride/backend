@@ -77,7 +77,7 @@ public class AppleLoginService {
             String username = "";
 
             if (email != null && !email.isEmpty()) {
-                username = email.split("@")[0];
+                username = email.split("@")[0].substring(0,4);
             } else {
                 username = appleUserId.length() >= 4 ? appleUserId.substring(0, 4) : appleUserId;
             }
