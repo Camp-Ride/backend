@@ -48,20 +48,27 @@ public class PostController {
         return ResponseEntity.ok().body(postService.create(oAuth2User, postRequest, images));
     }
 
+//    @GetMapping("/v1/post/paging")
+//    public ResponseEntity<Page<PostResponse>> searchPostsPage(
+//            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
+//        return ResponseEntity.ok().body(postService.searchPostsPage(pageable, sortType));
+//    }
+//
+//    @GetMapping("/v2/post/paging")
+//    public ResponseEntity<Page<PostResponse>> searchPostsPageV2(
+//            @AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+//            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
+//        return ResponseEntity.ok().body(postService.searchPostsPageV2(oAuth2User, pageable, sortType));
+//    }
+//
+//    @GetMapping("/v3/post/paging")
+//    public ResponseEntity<Page<PostResponse>> searchPostsPageV3(
+//            @AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+//            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
+//        return ResponseEntity.ok().body(postService.searchPostsPageV3(oAuth2User, pageable, sortType));
+//    }
+
     @GetMapping("/v1/post/paging")
-    public ResponseEntity<Page<PostResponse>> searchPostsPage(
-            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
-        return ResponseEntity.ok().body(postService.searchPostsPage(pageable, sortType));
-    }
-
-    @GetMapping("/v2/post/paging")
-    public ResponseEntity<Page<PostResponse>> searchPostsPageV2(
-            @AuthenticationPrincipal final CustomOAuth2User oAuth2User,
-            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
-        return ResponseEntity.ok().body(postService.searchPostsPageV2(oAuth2User, pageable, sortType));
-    }
-
-    @GetMapping("/v3/post/paging")
     public ResponseEntity<Page<PostResponse>> searchPostsPageV3(
             @AuthenticationPrincipal final CustomOAuth2User oAuth2User,
             @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {

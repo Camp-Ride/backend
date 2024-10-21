@@ -27,6 +27,7 @@ public class CommentResponse {
                         comment.getContent(), LikeResponse.from(comment.getLikes()), comment.getCreatedAt()))
                 .collect(Collectors.toList());
 
+//        Version1
 //        return comments.stream()
 //                .map((comment) -> new CommentResponse(comment.getId(), comment.getAuthorId(), comment.getAuthor(),
 //                        comment.getContent(), LikeResponse.from(comment.getLikes()), comment.getCreatedAt()))
