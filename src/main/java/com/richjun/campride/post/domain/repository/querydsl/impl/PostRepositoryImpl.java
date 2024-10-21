@@ -31,11 +31,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 queryFactory.select(block.targetUser.id)
                         .from(block)
                         .where(block.user.id.eq(user.getId()))
-        ).and(post.comments.any().authorId.notIn(
-                queryFactory.select(block.targetUser.id)
-                        .from(block)
-                        .where(block.user.id.eq(user.getId()))
-        ));
+        );
     }
 
 
@@ -46,7 +42,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         List<Long> blockedUserIds = currentUser.getBlocks().stream()
                 .map(block -> block.getTargetUser().getId())
                 .collect(Collectors.toList());
-        return post.user.id.notIn(blockedUserIds).and(post.comments.any().authorId.notIn(blockedUserIds));
+        return post.user.id.notIn(blockedUserIds);
     }
 
 
@@ -163,4 +159,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         return new PageImpl<>(postResponses, pageable, total);
     }
+
+
 }

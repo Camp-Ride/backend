@@ -31,10 +31,11 @@ public class PostResponse {
                 post.getTitle(),
                 post.getContents(),
                 LikeResponse.from(post.getLikes()),
-                CommentResponse.from(post.getComments()),
+                CommentResponse.from(post.getComments(), post.getUser().getBlocks()),
                 post.getImages(),
                 post.getCreatedAt()
         );
     }
+
 
 }

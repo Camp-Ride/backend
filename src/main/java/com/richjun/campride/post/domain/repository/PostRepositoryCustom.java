@@ -18,4 +18,5 @@ public interface PostRepositoryCustom {
     Page<PostResponse> searchPostsPageV3(Pageable pageable, User user);
 
     Page<PostResponse> searchPostsPageByLikesV3(Pageable pageable, User user);
+
 }
