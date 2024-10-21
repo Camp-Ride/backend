@@ -4,6 +4,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.richjun.campride.block.domain.Block;
 import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.global.jwt.domain.RefreshToken;
 import com.richjun.campride.report.domain.Report;
@@ -49,6 +50,13 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Block> blocks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "targetUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Block> blockedBy = new ArrayList<>();
+
 
     public User(String socialLoginId, String nickname, String role, String deviceToken) {
         this.socialLoginId = socialLoginId;
