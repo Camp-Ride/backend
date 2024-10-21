@@ -44,7 +44,7 @@ public class User extends BaseEntity {
     private RefreshToken refreshToken;
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
 
     public User(String socialLoginId, String nickname, String role, String deviceToken) {
