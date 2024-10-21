@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.richjun.campride.global.common.BaseEntity;
 import com.richjun.campride.global.jwt.domain.RefreshToken;
+import com.richjun.campride.report.domain.Report;
 import com.richjun.campride.room.domain.Participant;
 import com.richjun.campride.room.domain.Room;
 import com.richjun.campride.user.request.UserRequest;
@@ -43,9 +44,11 @@ public class User extends BaseEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private RefreshToken refreshToken;
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports = new ArrayList<>();
 
     public User(String socialLoginId, String nickname, String role, String deviceToken) {
         this.socialLoginId = socialLoginId;
