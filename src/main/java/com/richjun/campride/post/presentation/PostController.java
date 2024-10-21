@@ -31,13 +31,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
     private final ObjectMapper objectMapper;
 
-    @PostMapping("/post")
+    @PostMapping("/v1/post")
     public ResponseEntity<Long> createPost(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
                                            @RequestPart("postRequest") @Valid final String postRequestStr,
                                            @RequestPart(value = "images", required = false) final List<MultipartFile> images)
@@ -48,20 +48,35 @@ public class PostController {
         return ResponseEntity.ok().body(postService.create(oAuth2User, postRequest, images));
     }
 
-    @GetMapping("/post/paging")
+    @GetMapping("/v1/post/paging")
     public ResponseEntity<Page<PostResponse>> searchPostsPage(
             @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
         return ResponseEntity.ok().body(postService.searchPostsPage(pageable, sortType));
     }
 
+    @GetMapping("/v2/post/paging")
+    public ResponseEntity<Page<PostResponse>> searchPostsPageV2(
+            @AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
+        return ResponseEntity.ok().body(postService.searchPostsPageV2(oAuth2User, pageable, sortType));
+    }
 
-    @GetMapping("/post/{id}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+    @GetMapping("/v3/post/paging")
+    public ResponseEntity<Page<PostResponse>> searchPostsPageV3(
+            @AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+            @RequestParam(value = "sortType", required = false) String sortType, Pageable pageable) {
+        return ResponseEntity.ok().body(postService.searchPostsPageV3(oAuth2User, pageable, sortType));
+    }
+
+
+    @GetMapping("/v1/post/{id}")
+    public ResponseEntity<PostResponse> getPost(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
+                                                @PathVariable Long id) {
         return ResponseEntity.ok().body(postService.getPost(id));
     }
 
 
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/v1/post/{id}")
     @PreAuthorize("@postPermissionService.isCreatedBy(#id, #oAuth2User)")
     public ResponseEntity<Long> deletePost(@AuthenticationPrincipal CustomOAuth2User oAuth2User,
                                            @PathVariable Long id) {
@@ -69,7 +84,7 @@ public class PostController {
     }
 
 
-    @PutMapping("/post/{id}")
+    @PutMapping("/v1/post/{id}")
     @PreAuthorize("@postPermissionService.isCreatedBy(#id, #oAuth2User)")
     public ResponseEntity<Long> updatePost(@AuthenticationPrincipal final CustomOAuth2User oAuth2User,
                                            @RequestPart("postRequest") @Valid final String postRequestStr,
