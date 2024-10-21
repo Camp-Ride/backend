@@ -31,13 +31,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public Page<PostResponse> searchPostsPage(Pageable pageable) {
 
-//        private List<LikeResponse> likeResponses;
-//        private List<CommentResponse> commentResponses;
-//        private List<String> imageNames;
-
         List<Post> posts = queryFactory.selectFrom(post)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(post.createdAt.desc())
                 .fetch();
 
         List<PostResponse> postResponses = posts.stream()
@@ -54,7 +51,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         List<Post> posts = queryFactory.selectFrom(post)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(post.likes.size().desc())
+                .orderBy(post.likes.size().desc(), post.createdAt.desc()
+                )
                 .fetch();
 
         List<PostResponse> postResponses = posts.stream()
