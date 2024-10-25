@@ -76,7 +76,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtExceptionHandlerFilter(),
                         JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/v1/login/**", "/api/v1/login**", "login/oauth2/**",
+                        .requestMatchers("/", "/login", "/api/v1/login/**", "/api/v1/login**", "/login/oauth2/**",
                                 "/ws/**", "/wss/**")
                         .permitAll()
                         .anyRequest().authenticated())
