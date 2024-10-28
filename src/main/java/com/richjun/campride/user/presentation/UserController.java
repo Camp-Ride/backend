@@ -99,7 +99,7 @@ public class UserController {
 
         log.info("Session check: {}", info);
         if (session != null) {
-            log.debug("현재 세션 정보 - ID: {}, 생성시간: {}, 마지막접근: {}, 만료시간: {}",
+            log.info("현재 세션 정보 - ID: {}, 생성시간: {}, 마지막접근: {}, 만료시간: {}",
                     session.getId(),
                     new Date(session.getCreationTime()),
                     new Date(session.getLastAccessedTime()),

@@ -9,6 +9,8 @@ import com.richjun.campride.global.exception.ExceptionCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -40,6 +42,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("request.getRequestURI() : {}", request.getRequestURI());
         log.info("request.getRequestURL() : {}", request.getRequestURL());
         log.info("request.getQueryString() : {}", request.getQueryString());
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            log.info("현재 세션 정보 - ID: {}, 생성시간: {}, 마지막접근: {}, 만료시간: {}",
+                    session.getId(),
+                    new Date(session.getCreationTime()),
+                    new Date(session.getLastAccessedTime()),
+                    session.getMaxInactiveInterval());
+        }
 
         if (jwtTokenProvider.validateToken(token)) {
 
