@@ -33,16 +33,6 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            String path = request.getRequestURI();
-            String url = request.getRequestURL().toString();
-            String queryString = request.getQueryString();
-            String fullUrl = queryString != null ? path + "?" + queryString : path;
-
-            log.info("Processing request: {}", fullUrl);
-            log.info("url: {}", url);
-            log.info("Should filter: {}", !shouldNotFilter(request));
-            log.info("Exception: {}", e.getMessage());
-
             try {
                 String json = new ObjectMapper().writeValueAsString(
                         new ErrorResponse(ExceptionCode.INVALID_ACCESS_TOKEN.getCode(),

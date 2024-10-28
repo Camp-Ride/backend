@@ -38,20 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtTokenProvider.resolveToken(request);
 
-        log.info("token : {}", token);
-        log.info("request.getRequestURI() : {}", request.getRequestURI());
-        log.info("request.getRequestURL() : {}", request.getRequestURL());
-        log.info("request.getQueryString() : {}", request.getQueryString());
-
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            log.info("현재 세션 정보 - ID: {}, 생성시간: {}, 마지막접근: {}, 만료시간: {}",
-                    session.getId(),
-                    new Date(session.getCreationTime()),
-                    new Date(session.getLastAccessedTime()),
-                    session.getMaxInactiveInterval());
-        }
-
         if (jwtTokenProvider.validateToken(token)) {
 
             Authentication authentication = jwtTokenProvider.getAuthentication(token);

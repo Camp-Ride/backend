@@ -73,41 +73,5 @@ public class UserController {
         return ResponseEntity.ok().body("User deleted successfully");
     }
 
-    @GetMapping("/test/session-check")
-    public Map<String, Object> checkSession(HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> info = new HashMap<>();
-
-        // 현재 세션 존재 여부
-        HttpSession session = request.getSession(false);
-        info.put("hasSession", session != null);
-
-
-
-        // 요청에 포함된 모든 쿠키 정보
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            info.put("cookies", Arrays.stream(cookies)
-                    .map(c -> c.getName() + "=" + c.getValue())
-                    .collect(Collectors.toList()));
-        }
-
-        // 현재 시간
-        info.put("timestamp", new Date());
-
-        // URL에 jsessionid 포함 여부
-        info.put("requestURL", request.getRequestURL().toString());
-
-        log.info("Session check: {}", info);
-        if (session != null) {
-            log.info("현재 세션 정보 - ID: {}, 생성시간: {}, 마지막접근: {}, 만료시간: {}",
-                    session.getId(),
-                    new Date(session.getCreationTime()),
-                    new Date(session.getLastAccessedTime()),
-                    session.getMaxInactiveInterval());
-        }
-
-        return info;
-    }
-
 
 }
