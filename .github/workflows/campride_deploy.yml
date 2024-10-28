@@ -44,7 +44,6 @@ jobs:
       - name: make resources file
         run: |
           cd ./src/main
-          mkdir ./resources
           cd ./resources
           touch ./application-prod.yaml
           echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yaml
