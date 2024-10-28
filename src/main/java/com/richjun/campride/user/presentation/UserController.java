@@ -8,7 +8,17 @@ import com.richjun.campride.global.jwt.dto.TokenResponse;
 import com.richjun.campride.user.request.UserRequest;
 import com.richjun.campride.user.response.UserResponse;
 import com.richjun.campride.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,6 +34,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 @SessionAttributes("deviceToken")
 @RequestMapping("/api/v1")
@@ -60,6 +71,33 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@AuthenticationPrincipal final CustomOAuth2User oAuth2User) {
         userService.deleteUser(oAuth2User);
         return ResponseEntity.ok().body("User deleted successfully");
+    }
+
+    @GetMapping("/test/session-check")
+    public Map<String, Object> checkSession(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> info = new HashMap<>();
+
+        // 현재 세션 존재 여부
+        HttpSession session = request.getSession(false);
+        info.put("hasSession", session != null);
+
+        // 요청에 포함된 모든 쿠키 정보
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            info.put("cookies", Arrays.stream(cookies)
+                    .map(c -> c.getName() + "=" + c.getValue())
+                    .collect(Collectors.toList()));
+        }
+
+        // 현재 시간
+        info.put("timestamp", new Date());
+
+        // URL에 jsessionid 포함 여부
+        info.put("requestURL", request.getRequestURL().toString());
+
+        log.info("Session check: {}", info);
+
+        return info;
     }
 
 
