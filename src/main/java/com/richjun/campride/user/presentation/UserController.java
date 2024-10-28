@@ -77,11 +77,27 @@ public class UserController {
     public String testRedirect(HttpSession session, @RequestParam String deviceToken, Model model) {
         log.info("현재 세션 ID: {}", session.getId());
 
+        long now = System.currentTimeMillis();
+
         log.info("현재 세션 정보:");
         log.info("ID: {}", session.getId());
         log.info("생성시간: {}", new Date(session.getCreationTime()));
-        log.info("세션 만료시간: {}", new Date(session.getMaxInactiveInterval()));
-        log.info("마지막접근: {}", new Date(session.getLastAccessedTime()));
+        // 세션 정보
+        log.info("세션 ID: {}", session.getId());
+        log.info("세션 생성 시간: {}", new Date(session.getCreationTime()));
+        log.info("마지막 접근 시간: {}", new Date(session.getLastAccessedTime()));
+
+        // 세션 타임아웃 설정값 (초)
+        int timeoutSeconds = session.getMaxInactiveInterval();
+        log.info("세션 타임아웃 설정: {}초", timeoutSeconds);
+
+        // 실제 만료 예정 시간
+        Date expiryTime = new Date(session.getLastAccessedTime() + (timeoutSeconds * 1000L));
+        log.info("세션 만료 예정 시간: {}", expiryTime);
+
+        // 남은 시간 계산
+        long remainingTime = (session.getLastAccessedTime() + (timeoutSeconds * 1000L) - now) / 1000;
+        log.info("세션 만료까지 남은 시간: {}초", remainingTime);        log.info("마지막접근: {}", new Date(session.getLastAccessedTime()));
 
         // 세션 만료시키기
         model.addAttribute("deviceToken", deviceToken);
