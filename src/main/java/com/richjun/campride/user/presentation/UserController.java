@@ -81,6 +81,8 @@ public class UserController {
         HttpSession session = request.getSession(false);
         info.put("hasSession", session != null);
 
+
+
         // 요청에 포함된 모든 쿠키 정보
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -96,6 +98,13 @@ public class UserController {
         info.put("requestURL", request.getRequestURL().toString());
 
         log.info("Session check: {}", info);
+        if (session != null) {
+            log.debug("현재 세션 정보 - ID: {}, 생성시간: {}, 마지막접근: {}, 만료시간: {}",
+                    session.getId(),
+                    new Date(session.getCreationTime()),
+                    new Date(session.getLastAccessedTime()),
+                    session.getMaxInactiveInterval());
+        }
 
         return info;
     }
