@@ -76,6 +76,13 @@ public class UserController {
     @GetMapping("/test/redirect")
     public String testRedirect(HttpSession session, @RequestParam String deviceToken, Model model) {
         log.info("현재 세션 ID: {}", session.getId());
+
+        log.info("현재 세션 정보:");
+        log.info("ID: {}", session.getId());
+        log.info("생성시간: {}", new Date(session.getCreationTime()));
+        log.info("마지막접근: {}", new Date(session.getLastAccessedTime()));
+
+
         // 세션 만료시키기
         model.addAttribute("deviceToken", deviceToken);
         session.invalidate();
@@ -85,6 +92,7 @@ public class UserController {
 
     @GetMapping("/after/redirect")
     public String afterRedirect(HttpServletRequest request) {
+
         log.info("리다이렉트 후 URL: {}", request.getRequestURL());
         log.info("전체 URI: {}", request.getRequestURI());
         log.info("쿼리스트링: {}", request.getQueryString());
