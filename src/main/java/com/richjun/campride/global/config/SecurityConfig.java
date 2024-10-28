@@ -85,6 +85,7 @@ public class SecurityConfig {
                                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
 
     }
