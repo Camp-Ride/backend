@@ -73,5 +73,22 @@ public class UserController {
         return ResponseEntity.ok().body("User deleted successfully");
     }
 
+    @GetMapping("/test/redirect")
+    public String testRedirect(HttpSession session) {
+        log.info("현재 세션 ID: {}", session.getId());
+        // 세션 만료시키기
+        session.invalidate();
+        log.info("세션 만료 후 리다이렉트 시작");
+        return "redirect:/after/redirect";
+    }
+
+    @GetMapping("/after/redirect")
+    public String afterRedirect(HttpServletRequest request) {
+        log.info("리다이렉트 후 URL: {}", request.getRequestURL());
+        log.info("전체 URI: {}", request.getRequestURI());
+        log.info("쿼리스트링: {}", request.getQueryString());
+        return "redirected-page";
+    }
+
 
 }
