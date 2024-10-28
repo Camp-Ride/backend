@@ -80,7 +80,7 @@ public class UserController {
         model.addAttribute("deviceToken", deviceToken);
         session.invalidate();
         log.info("세션 만료 후 리다이렉트 시작");
-        return "redirect:/after/redirect";
+        return "redirect:/api/v1/after/redirect";
     }
 
     @GetMapping("/after/redirect")
