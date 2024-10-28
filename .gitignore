@@ -38,7 +38,13 @@ out/
 
 campride.mv.db
 
-src/main/resources/*
+src/main/resources/firebase
+src/main/resources/static
+src/main/resources/templates
+src/main/resources/application.properties
+src/main/resources/application-local.yaml
+src/main/resources/application-prod.yaml
+
 
 src/main/resources/application-local.yaml
 src/main/resources/application-prod.yaml
@@ -55,4 +61,7 @@ redis_data
 /certbot
 
 init-letsencrypt.sh
+
+logs
+
 

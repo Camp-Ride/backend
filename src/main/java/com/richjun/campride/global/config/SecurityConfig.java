@@ -6,6 +6,7 @@ import com.richjun.campride.global.jwt.JwtAuthenticationFilter;
 import com.richjun.campride.global.jwt.JwtExceptionHandlerFilter;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
 
+import com.richjun.campride.global.logging.CloudWatchLogsService;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -31,14 +32,16 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CloudWatchLogsService cloudWatchLogsService;
 
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler,
-                          JwtTokenProvider jwtTokenProvider) {
+                          JwtTokenProvider jwtTokenProvider, CloudWatchLogsService cloudWatchLogsService) {
 
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.cloudWatchLogsService = cloudWatchLogsService;
 
     }
 
@@ -73,7 +76,7 @@ public class SecurityConfig {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionHandlerFilter(),
+                .addFilterBefore(new JwtExceptionHandlerFilter(cloudWatchLogsService),
                         JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/api/v1/login/**", "/api/v1/login**", "/login/oauth2/**",
