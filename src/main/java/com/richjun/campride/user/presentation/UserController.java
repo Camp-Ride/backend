@@ -80,8 +80,8 @@ public class UserController {
         log.info("현재 세션 정보:");
         log.info("ID: {}", session.getId());
         log.info("생성시간: {}", new Date(session.getCreationTime()));
+        log.info("세션 만료시간: {}", new Date(session.getMaxInactiveInterval()));
         log.info("마지막접근: {}", new Date(session.getLastAccessedTime()));
-
 
         // 세션 만료시키기
         model.addAttribute("deviceToken", deviceToken);
