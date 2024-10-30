@@ -117,7 +117,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private RefreshToken verifyExpirationAndUpdateToken(RefreshToken refreshToken) {
         if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             log.info("refreshToken expired : {}", refreshToken.getToken());
-            refreshToken.updateToken();
+            return refreshTokenRepository.save(refreshToken);
         }
         return refreshToken;
     }
