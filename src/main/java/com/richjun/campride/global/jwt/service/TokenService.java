@@ -73,6 +73,15 @@ public class TokenService {
         return token;
     }
 
+    public RefreshToken updateExpiration(RefreshToken token) {
+        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+            token.updateToken();
+        }
+
+        return token;
+    }
+
+
     @Transactional
     public Long deleteByUserId(User user) {
         return refreshTokenRepository.deleteByUser(user);
@@ -99,7 +108,6 @@ public class TokenService {
     }
 
 
-
     public Map<String, String> parseHeaders(String token) throws JsonProcessingException {
         String header = token.split("\\.")[0];
         return new ObjectMapper().readValue(decodeHeader(header), Map.class);
@@ -116,8 +124,6 @@ public class TokenService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-
 
 
 }

@@ -1,12 +1,14 @@
 package com.richjun.campride.global.auth.handler;
 
 
+import static com.richjun.campride.global.exception.ExceptionCode.EXPIRED_REFRESH_TOKEN;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
 import static com.richjun.campride.global.exception.ExceptionCode.NOT_FOUND_USER_ID;
 import static com.richjun.campride.global.jwt.util.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.richjun.campride.global.auth.domain.CustomOAuth2User;
+import com.richjun.campride.global.exception.AuthException;
 import com.richjun.campride.global.exception.BadRequestException;
 import com.richjun.campride.global.exception.ExceptionCode;
 import com.richjun.campride.global.jwt.JwtTokenProvider;
@@ -23,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
@@ -33,6 +36,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
@@ -79,6 +83,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
 
+    @Transactional
     protected String determineTargetUrl(jakarta.servlet.http.HttpServletRequest request,
                                         jakarta.servlet.http.HttpServletResponse response,
                                         Authentication authentication) {
@@ -97,7 +102,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String accessToken = jwtTokenProvider.generateAccessToken(authentication.getName(),
                 authentication.getAuthorities());
+
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+                .map(this::verifyExpirationAndUpdateToken)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_REFRESH_TOKEN));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
@@ -105,6 +112,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .queryParam("refreshtoken", refreshToken.getToken())
                 .queryParam("isNicknameUpdated", isNicknameUpdated)
                 .build().toUriString();
+    }
+
+    private RefreshToken verifyExpirationAndUpdateToken(RefreshToken refreshToken) {
+        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
+            refreshToken.updateToken();
+        }
+        return refreshToken;
     }
 
     protected void clearAuthenticationAttributes(jakarta.servlet.http.HttpServletRequest request,
