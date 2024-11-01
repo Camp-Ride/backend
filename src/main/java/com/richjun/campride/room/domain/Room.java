@@ -79,8 +79,8 @@ public class Room extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime departureTime;
 
-    @Column(nullable = false)
-    private int trainingDays;
+//    @Column(nullable = false)
+//    private int trainingDays;
 
     @Column(nullable = false)
     private int maxParticipants;
@@ -110,7 +110,6 @@ public class Room extends BaseEntity {
                 roomRequest.getDestination(),
                 destinationLocation,
                 roomRequest.getDepartureTime(),
-                roomRequest.getTrainingDays(),
                 roomRequest.getMaxParticipants(),
                 roomRequest.getRoomType(),
                 new ArrayList<>(),

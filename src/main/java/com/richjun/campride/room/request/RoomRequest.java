@@ -45,10 +45,10 @@ public class RoomRequest {
 //    @JsonFormat(pattern = "yyyy-MM-dd-HH:mm")
     private LocalDateTime departureTime;
 
-    @NotNull(message = "훈련량을 선택해 주세요.")
-    @Min(value = 1, message = "훈련량이 1보다 작을 수 없습니다.")
-    @Max(value = 10, message = "훈련량이 10보다 클 수 없습니다.")
-    private int trainingDays;
+//    @NotNull(message = "훈련량을 선택해 주세요.")
+//    @Min(value = 1, message = "훈련량이 1보다 작을 수 없습니다.")
+//    @Max(value = 10, message = "훈련량이 10보다 클 수 없습니다.")
+//    private int trainingDays;
 
     @NotNull(message = "방 최대 참여 인원을 선택해 주세요.")
     @Min(value = 2, message = "방 최대 참여 인원이 2보다 작을 수 없습니다.")

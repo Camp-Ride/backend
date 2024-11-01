@@ -21,7 +21,6 @@ public class RoomJoinedResponse {
     private String destination;
     private Location destinationLocation;
     private LocalDateTime departureTime;
-    private int trainingDays;
     private int maxParticipants;
     private RoomType roomType;
     private List<ParticipantResponse> participants;
@@ -41,7 +40,6 @@ public class RoomJoinedResponse {
                 room.getDestination(),
                 room.getDestinationLocation(),
                 room.getDepartureTime(),
-                room.getTrainingDays(),
                 room.getMaxParticipants(),
                 room.getRoomType(),
                 ParticipantResponse.from(room.getParticipants()),
