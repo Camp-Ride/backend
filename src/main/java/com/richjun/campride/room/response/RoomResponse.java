@@ -35,7 +35,7 @@ public class RoomResponse {
     private String destination;
     private Location destinationLocation;
     private LocalDateTime departureTime;
-    private int trainingDays;
+    private int maxParticipants;
     private RoomType roomType;
     private List<ParticipantResponse> participants;
     private LocalDateTime createdAt;
