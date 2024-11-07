@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class UserService {
 
@@ -39,6 +38,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenService tokenService;
 
+    @Transactional(readOnly = true)
     public UserResponse getMyInfo(CustomOAuth2User customOAuth2User) {
         User user = userRepository.findBySocialLoginId(customOAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
@@ -47,6 +47,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public UserResponse updateMyInfo(CustomOAuth2User customOAuth2User, UserRequest userRequest) {
         User user = userRepository.findBySocialLoginId(customOAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
@@ -59,6 +60,7 @@ public class UserService {
         return UserResponse.from(user);
     }
 
+    @Transactional(readOnly = true)
     public String getUserFCMToken(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));
@@ -66,8 +68,12 @@ public class UserService {
         return user.getDeviceToken();
     }
 
+    @Transactional
     public User findOrCreateUser(final String socialLoginId, final String name, String role, String deviceToken) {
-        return userRepository.findBySocialLoginId(socialLoginId)
+        return userRepository.findBySocialLoginId(socialLoginId).map(user -> {
+                    user.updateDeviceToken(deviceToken);
+                    return userRepository.save(user);
+                })
                 .orElseGet(() -> createUser(socialLoginId, name, role, deviceToken));
     }
 
@@ -90,6 +96,7 @@ public class UserService {
         return String.format("%04d", randomNumber);
     }
 
+    @Transactional
     public void deleteUser(CustomOAuth2User oAuth2User) {
         User user = userRepository.findBySocialLoginId(oAuth2User.getName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER_ID));

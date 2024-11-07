@@ -75,4 +75,7 @@ public class User extends BaseEntity {
         return isNicknameUpdated;
     }
 
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }
