@@ -48,8 +48,7 @@ for i in $(seq 1 $MAX_RETRIES); do
         mv build/libs_new build/libs
 
         # Nginx 설정 업데이트
-        sed -i "s/proxy_pass  http:\/\/$CURRENT_CONTAINER:$CURRENT_PORT/proxy_pass  http:\/\/$NEW_CONTAINER:$NEW_PORT/" $NGINX_CONF
-
+        sed -i "s|proxy_pass  http://$CURRENT_CONTAINER:$CURRENT_PORT|proxy_pass  http://$NEW_CONTAINER:$NEW_PORT|" $NGINX_CONF
 
         # Nginx 설정 리로드
         docker compose exec -T nginx nginx -s reload
